@@ -1,0 +1,10 @@
+RewriteEngine On
+Options All -Indexes
+
+# Permitir archivos reales (CSS, JS, imágenes, PDFs, etc.)
+RewriteCond %{REQUEST_FILENAME} -f [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^ - [L]
+
+# Redirige el resto de las rutas limpias a index.php con ?views=
+RewriteRule ^(.+)$ index.php?views=$1 [QSA,L]
