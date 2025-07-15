@@ -1,0 +1,20 @@
+<app-buscador [placeholder]="'Buscar tarjeta...'" (buscar)="filtrarConfiguracionSistema($event)" ></app-buscador>
+
+<div *ngIf="tarjetasVisibles.length === 0">
+  <app-error-message [mensaje]="'No se encontraron tarjetas que coincidan con tu búsqueda.'" [imagen]="'error-busqueda.png'">
+  </app-error-message>
+</div>
+
+<div class="container-home-page mt-3">
+  <div class="card-grid">
+    <a *ngFor="let tarjeta of tarjetasVisibles; let i = index" [routerLink]="tarjeta.ruta">
+      <div class="card-item animate__animated animate__zoomIn" [style.animationDelay]="(i * 100) + 'ms'">
+        <div class="card-header">{{ tarjeta.nombre }}</div>
+        <div class="card-body">
+          <img [src]="CargarImagenes(1, tarjeta.imagen)" alt="{{ tarjeta.nombre }}">
+        </div>
+        <div class="card-footer">Ir</div>
+      </div>
+    </a>
+  </div>
+</div>

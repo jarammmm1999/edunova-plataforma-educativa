@@ -1,0 +1,104 @@
+<!-- perfil-usuario.html con nuevo diseño inspirado en imagen proporcionada -->
+<div class="container mt-5 mb-4 animate__animated animate__fadeIn">
+  <div class="row bg-white rounded-4 shadow-lg overflow-hidden">
+    <!-- Columna izquierda: imagen y fondo -->
+    <div class="col-md-4 d-flex flex-column justify-content-center align-items-center p-4 contenedor-info-user" >
+      <label class="position-relative d-inline-block" style="cursor: pointer;">
+        <img [src]="nuevaImagen ? nuevaImagen : CargarImagenes(3, usuario.imagen)"
+             class="rounded-circle border border-3 shadow"
+             style="width: 200px; height: 200px; object-fit: cover;">
+
+        <!-- Icono de edición -->
+        <div class="position-absolute top-50 start-50 translate-middle text-white bg-dark bg-opacity-50 rounded-circle p-2"
+             style="width: 50px; height: 50px; display: none;"
+             id="iconoEditar">
+          <i class="fa-solid fa-pen"></i>
+        </div>
+        <input type="file" accept="image/*" hidden (change)="cambiarImagen($event)">
+      </label>
+    </div>
+
+    <!-- Columna derecha: información -->
+    <div class="col-md-8 p-5">
+      <h4 class="text-title fw-bold mb-4">Detalles de usuario</h4>
+      <p><strong>Nombre:</strong> {{ usuario?.nombres }}</p>
+      <p><strong>Correo:</strong> {{ usuario?.correo }}</p>
+      <p><strong>Teléfono:</strong> {{ usuario?.telefono }}</p>
+      <p><strong>Rol:</strong> {{ usuario?.rol }}</p>
+    <p><strong>Estado:</strong>
+        <span class="badge" [ngClass]="{
+          'bg-success': usuario?.estado == 1,
+          'bg-danger': usuario?.estado != 1
+        }">
+            {{ usuario?.estado_texto }}
+        </span>
+    </p>
+      <p><strong>Sede:</strong> {{ sede?.nombre_sede }}</p>
+
+
+      <button class="btn btn-update-user mt-3" data-bs-toggle="modal" data-bs-target="#modalEditarPerfil" (click)="prepararEdicion()">
+        <i class="fa-solid fa-pen me-1"></i> Actualizar Información usuario
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL DE EDICION (se conserva igual) -->
+<div class="modal fade" id="modalEditarPerfil" tabindex="-1">
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content rounded-4">
+      <div class="modal-header  text-white">
+        <h5 class="modal-title">Editar Perfil de Usuario</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <form (ngSubmit)="actualizarPerfil()">
+        <div class="modal-body p-4">
+          <div class="row mb-3">
+            <div class="col-md-4">
+                <app-inputs label="Nombres" type="text" name="nombres" [(ngModel)]="usuarioEdit.nombres" [required]="true">
+                </app-inputs>
+            </div>
+            <div class="col-md-4">
+                  <app-inputs label="Correo" type="email" name="correo" [(ngModel)]="usuarioEdit.correo" [required]="true">
+                </app-inputs>
+            </div>
+            <div class="col-md-4">
+                  <app-inputs label="Teléfono" type="text" name="telefono" [(ngModel)]="usuarioEdit.telefono" [required]="true">
+                </app-inputs>
+            </div>
+          </div>
+
+          <hr>
+          <h6 class="fw-bold text-title two">Cambiar Contraseña</h6>
+
+          <div class="row">
+            <div class="col-md-6 mb-3">
+            <app-inputs label="Contraseña nueva" type="password" name="Contraseña_nueva" placeholder="Ingrese su contraseña"
+              [(ngModel)]="usuarioEdit.password" [required]="true">
+            </app-inputs>
+            </div>
+            <div class="col-md-6 mb-3">
+                <app-inputs label="Confirmar contraseña" type="password" name="confirmPassword" placeholder="Ingrese su contraseña"
+              [(ngModel)]="usuarioEdit.confirmPassword" [required]="true">
+            </app-inputs>
+            </div>
+          </div>
+
+          <div class="text-center">
+            <div class="text-center mt-2">
+                <app-button-submit  [text]="'Actualizar Usuario'"></app-button-submit>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+            Cancelar
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+

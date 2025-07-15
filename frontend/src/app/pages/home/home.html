@@ -1,0 +1,16 @@
+<!-- Aquí irán los contenidos que cambian (usuarios, proyectos, etc.) -->
+<div class="container-bar">
+  <label class="buttons__burger" for="burger">
+    <input type="checkbox" id="burger" (click)="activarSidebar()">
+    <span></span>
+    <span></span>
+    <span></span>
+  </label>
+</div>
+<div class="contenedor-home">
+  <app-textos *ngIf="mostrarTextPage && usuario?.nombres" [nombreUsuario]="usuario.nombres" [title]="titulo"
+    [rol]="usuario.id_rol" [vista]="ruta" [icono]="icono">
+  </app-textos>
+  <router-outlet></router-outlet>
+
+</div>

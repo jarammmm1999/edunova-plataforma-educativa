@@ -1,0 +1,160 @@
+.container-main-login {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  padding: 0;
+  margin: 0;
+}
+
+.container-main-login .container-section-image {
+  position: relative;
+  width: 50%;
+  height: auto;
+  min-height: 100vh;
+}
+
+.container-main-login .container-section-image .carousel,
+.carousel-inner,
+.carousel-item {
+  width: 100%;
+  height: 100%;
+
+}
+
+.container-main-login .container-section-image img {
+  width: 100%;
+  height: 100vh;
+  background-size: cover;
+}
+
+.header-title-loguin {
+  width: 100%;
+  height: 60px;
+  background: var(--color-primario);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 1rem;
+}
+
+.header-title-loguin h3 {
+  font-size: 20px;
+}
+
+.content-information {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-height: 98vh;
+  /* o el alto que necesites */
+}
+
+.container-logo {
+  width: 130px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+
+/* Contenedor principal centrado */
+.login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
+/* Tarjeta del formulario */
+.login-form {
+  background-color: #fff;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  padding: 20px 40px;
+  width: 100%;
+  max-width: 600px;
+  animation: fadeInUp 0.8s ease;
+}
+
+/* Título */
+.login-title {
+  width: 100%;
+  height: 50px;
+  background: var(--color-primario);
+  color: white;
+  text-align: center;
+  line-height: 50px;
+  border-radius: 8px;
+  text-transform: uppercase;
+  font-size: 17px;
+  font-weight: bold;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+/**************************************************************************/
+
+.icon-strip {
+  display: flex;
+  width: 100%;
+  height: 44px;
+  overflow: hidden;
+  margin-top: auto;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+.icon-section {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  color: var(--color-primario);
+  transition: flex 0.4s ease;
+  cursor: pointer;
+}
+
+.icon-section:hover {
+  background: var(--color-primario);
+  color: white;
+  transition: all 0.3s ease;
+}
+
+/* Aplica el borde derecho solo a todos excepto el último */
+.icon-section:not(:last-child) {
+  border-right: 1px solid var(--color-secundario);
+}
+
+.icon-section:hover {
+  flex: 3;
+}
+
+.icon-content {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  /* espacio entre icono y texto */
+  opacity: 1;
+  transition: all 0.3s ease;
+  padding: 0 12px;
+}
+
+.icon {
+  font-size: 14px;
+  transition: transform 0.3s ease;
+}
+
+.icon-section:hover .icon {
+  transform: scale(1.2);
+}
+
+.icon-section .text {
+  display: none;
+  white-space: nowrap;
+  transition: opacity 0.4s ease;
+  font-size: 14px;
+}
+
+.icon-section:hover .text {
+  display: block;
+}
+

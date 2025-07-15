@@ -1,0 +1,304 @@
+
+.materias-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+}
+
+.materia-card {
+  width: 200px;
+  background-color: #6f1ab6;
+  border-radius: 8px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+  animation: fadeInUp 0.5s ease;
+  transition: transform 0.2s ease;
+}
+
+.materia-card:hover {
+  transform: translateY(-4px);
+}
+
+.materia-header {
+  background-color: var(--color-primario);
+  color: white;
+  text-align: center;
+  font-weight: bold;
+  font-size: 1rem;
+  padding: 12px 0;
+}
+
+.materia-body {
+  background-color: #e8ecf1;
+  flex-grow: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px 0;
+}
+
+.materia-letra {
+  font-size: 4rem !important;
+  font-weight: 700;
+  color: var(--color-primario);
+}
+
+.materia-footer {
+  background-color: var(--color-primario);
+  padding: 10px;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+.btn-editar,
+.btn-ver-grupos,
+.btn-eliminar {
+  border: none;
+  border-radius: 6px;
+  padding: 6px 10px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background 0.2s ease;
+  color: white;
+}
+
+.btn-editar {
+  background-color: #ffc107;
+}
+
+.btn-editar:hover {
+  background-color: #e6ac00;
+}
+
+.btn-eliminar {
+  background-color: #dc3545;
+}
+
+.btn-ver-grupos {
+  background-color: #04f018;
+}
+
+.btn-eliminar:hover {
+  background-color: #c82333;
+}
+
+.mensaje-vacio {
+  text-align: center;
+  margin-top: 2rem;
+  color: #666;
+  font-style: italic;
+}
+
+/* Animación */
+@keyframes fadeInUp {
+  from {
+    transform: translateY(15px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0px);
+    opacity: 1;
+  }
+}
+
+/********************************************/
+.materia-grupos {
+  padding: 8px;
+  text-align: center;
+}
+
+.grupo-pill {
+  display: inline-block;
+  background-color: #6f1ab6;
+  color: #fff;
+  padding: 4px 12px;
+  border-radius: 20px;
+  margin: 4px 6px;
+  font-size: 0.85rem;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  transition: all 0.3s ease;
+}
+
+.modal-header{
+  background-color: var(--color-primario);
+}
+.btn-editar-grupo{
+  background-color: var(--color-primario);
+  color: #fff;
+}
+.btn-editar-grupo:active{
+  background-color: var(--color-secundario);
+  color: #fff;
+  box-shadow: none;
+}
+.swal-encima-de-bootstrap {
+  z-index: 1080 !important;
+  position: fixed !important;
+}
+
+.popup-visible {
+  z-index: 1090 !important;
+}
+
+.swal2-input {
+  pointer-events: auto !important;
+  user-select: auto !important;
+  background-color: #fff !important;
+  color: #000 !important;
+}
+
+.btn-send_grupo{
+  background-color: var(--color-primario);
+  color: #fff;
+}
+
+/****************************arrasados*************************************/
+.chip-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.7rem;
+  margin-top: 1rem;
+}
+
+.materia-chip {
+  background-color: #ede7f6;
+  padding: 0.6rem 1rem;
+  border-radius: 20px;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  border: 1px solid var(--color-primario);
+  user-select: none;
+}
+
+.materia-chip input[type="checkbox"] {
+  accent-color: var(--color-secundario);
+}
+
+.btn-add-materias{
+  border: 2px solid var(--color-primario);
+  color: var(--color-primario);
+  transition: all 0.3s ease;
+  
+}
+
+.btn-add-materias:hover{
+  background-color: var(--color-primario);
+  color: white;
+  transition: ease-in-out 0.3s ease;
+}
+
+
+
+.button {
+  position: relative;
+  border: none;
+  background: transparent;
+  padding: 0;
+  outline: none;
+  cursor: pointer;
+  font-family: sans-serif;
+}
+
+/* Shadow layer */
+.button .shadow {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.25);
+  border-radius: 8px;
+  transform: translateY(2px);
+  transition: transform 600ms cubic-bezier(0.3, 0.7, 0.4, 1);
+}
+
+/* Edge layer (color rojo degradado oscuro) */
+.button .edge {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 8px;
+  background: linear-gradient(
+    to left,
+    hsl(0, 90%, 39%) 0%,
+    hsl(0, 80%, 35%) 8%,
+    hsl(0, 92%, 45%) 92%,
+    hsl(0, 98%, 43%) 100%
+  );
+}
+
+/* Front layer (botón rojo) */
+.button .front {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 28px;
+  font-size: 14px;
+  color: white;
+  background: hsl(0, 98%, 50%);
+  text-transform: uppercase;
+  font-weight: 700;
+  border-radius: 8px;
+  transform: translateY(-4px);
+  transition: transform 600ms cubic-bezier(0.3, 0.7, 0.4, 1);
+}
+
+/* Hover y activo */
+.button:hover .shadow {
+  transform: translateY(4px);
+  transition: transform 250ms cubic-bezier(0.3, 0.7, 0.4, 1.5);
+}
+
+.button:hover .front {
+  transform: translateY(-6px);
+  transition: transform 250ms cubic-bezier(0.3, 0.7, 0.4, 1.5);
+}
+
+.button:active .shadow {
+  transform: translateY(1px);
+  transition: transform 34ms;
+}
+
+.button:active .front {
+  transform: translateY(-2px);
+  transition: transform 34ms;
+}
+
+.button .front span {
+  user-select: none;
+}
+
+/**********************************************************/
+
+/* Color base del botón */
+.accordion-button {
+  background-color: #f8f9fa; /* gris claro */
+  color: #0d1b2a; /* texto oscuro */
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Color cuando está activo (acordeón abierto) */
+.accordion-button:not(.collapsed) {
+  background-color: var(--color-primario); /* azul o tu color personalizado */
+  color: white;
+  font-weight: bold;
+  box-shadow: none;
+}
+
+.accordion-button:not(.collapsed)::after {
+  filter: brightness(0) invert(1); 
+}
+
+.form-grado {
+ margin-top: -20px;
+}

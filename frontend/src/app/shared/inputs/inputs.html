@@ -1,0 +1,13 @@
+<div class="form-group">
+  <div class="form-floating mb-3 input-wrapper">
+    <input [type]="verContrasena ? 'text' : type" class="form-control" [id]="name" [name]="name"
+      [placeholder]="placeholder" [value]="value" (input)="actualizarValor($event)" (blur)="onInputBlur()"
+      [required]="required" [ngClass]="{ 'is-invalid': campoInvalido && fueTocado }" />
+    <label [for]="name">{{ label }}</label>
+
+    <!-- Ojito para mostrar/ocultar contraseña -->
+    <span class="icono-ojo" *ngIf="type === 'password'" (click)="verContrasena = !verContrasena">
+      <i class="fa-solid" [ngClass]="verContrasena ? 'fa-eye-slash' : 'fa-eye'"></i>
+    </span>
+  </div>
+</div>

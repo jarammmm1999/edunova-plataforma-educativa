@@ -1,0 +1,251 @@
+<h2 class="form-title mt-5"><i class="fa-solid fa-book"></i>&nbsp; Grados académicas</h2>
+<form (ngSubmit)="registrargrado()" #formGrado="ngForm" class="row g-3 align-items-center mt-1">
+    <!-- Input: ocupa 9 columnas en pantallas md y full en xs -->
+    <div class="col-12 col-md-9">
+        <app-inputs label="Grados académico" type="text" name="materia" [(ngModel)]="grado"
+            [required]="true"></app-inputs>
+    </div>
+
+    <!-- Botón: ocupa 3 columnas en md y full en xs -->
+    <div class="col-12 col-md-3 text-md-end text-center">
+        <div class="text-center form-grado ">
+            <app-button-submit [text]="'Registrar Grado'"></app-button-submit>
+        </div>
+    </div>
+</form>
+
+<h2 class="form-title mt-2"><i class="fa-solid fa-book"></i>&nbsp; Grados académicos registrados</h2>
+
+<div class="materias-container" *ngIf="grados.length > 0; else sinGrado">
+  <div class="materia-card" *ngFor="let grado of getgradosFiltradas()">
+    <div class="materia-header">{{ grado.nombre_grado }}</div>
+
+    <div class="materia-body">
+      <span class="materia-letra">
+        {{ grado.nombre_grado.charAt(0).toUpperCase() }}
+      </span>
+    </div>
+
+    
+    <div class="materia-footer">
+      <button class="btn btn-success" (click)="abrirModalGrupos(grado)">
+        <i class="fas fa-users"></i> 
+      </button>
+      <button class="btn-editar" data-tippy-content="Editar este grado" title="Editar" (click)="actualizargrado(grado)">
+        <i class="fas fa-pencil-alt"></i>
+      </button>
+      <button class="btn-eliminar" title="Eliminar" (click)="eliminargrado(grado)">
+        <i class="fas fa-trash-alt"></i>
+      </button>
+    </div>
+    </div>
+</div>
+
+ <!-- ❌ Sin materias -->
+  <ng-template #sinGrado>
+    <app-error-message [mensaje]="' No hay grados académicos registrados para esta sede.'" [imagen]="'error-busqueda.png'">
+  </app-error-message>
+  </ng-template>
+
+
+<div class="modal fade animate__animated" id="modalGrupos" tabindex="-1" aria-labelledby="tituloModalGrupos" aria-hidden="true">
+  <div class="modal-dialog modal-xl modal-dialog-scrollable">
+    <div class="modal-content">
+      
+      <!-- Encabezado -->
+      <div class="modal-header  text-white">
+        <h3 class="modal-title" id="tituloModalGrupos">
+          Grupos del grado: {{ gradoSeleccionado?.nombre_grado }}
+        </h3>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+
+      <!-- Cuerpo -->
+      <div class="modal-body">
+        <!-- Recorremos cada grupo -->
+        <div *ngFor="let grupo of gruposModal" class="row align-items-center g-2 mb-3 flex-wrap">
+          
+          <!-- Nombre grupo -->
+          <div class="col-12 col-md-5">
+             <app-inputs label="Nombre del grupo" type="text" name="materia" [(ngModel)]="grupo.nombre_grupo"
+              [required]="true"></app-inputs>
+          </div>
+
+          <!-- Cantidad -->
+          <div class="col-12 col-md-5">
+            <app-inputs label="Cantidad" type="number" name="materia" [(ngModel)]="grupo.cantidad"
+              [required]="true"></app-inputs>
+          </div>
+
+          <!-- Botones de acción -->
+          <div class="col-12 col-md-2 d-flex justify-content-start gap-2 mt-2 mt-md-0">
+            <button class="btn btn-editar-grupo" (click)="actualizargrupo(grupo)" title="Editar grupo">
+              <i class="fas fa-edit"></i> Editar
+            </button>
+            <button class="btn btn-danger" (click)="eliminarGrupo(grupo)" title="Eliminar grupo">
+              <i class="fas fa-trash-alt"></i> Eliminar
+            </button>
+          </div>
+        </div>
+
+        <hr />
+
+        <!-- Botón para agregar nuevo grupo -->
+        <button class="btn btn-success" (click)="agregarNuevoGrupo()">+ Agregar grupo</button>
+      </div>
+
+      <!-- Footer -->
+      <div class="modal-footer">
+        <button class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+        <button class="btn btn-send_grupo" (click)="guardarGrupos()">Guardar cambios</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!--------------------------------------arrastables---------------------------------------------------->
+
+<div *ngIf="grados.length > 0; ">
+
+<h2 class="form-title mt-5"><i class="fa-solid fa-book"></i>&nbsp; Asigar materias a los grados</h2>
+<div class="accordion mb-5" id="accordionGrados">
+  <div class="accordion-item" *ngFor="let grupo of materiasPorGrado; let i = index">
+    
+    <h2 class="accordion-header" [id]="'heading' + i">
+      <button class="accordion-button"
+              [class.collapsed]="activeIndex !== i"
+              type="button"
+              (click)="toggleAcordeon(i)">
+        🎓 Grado: {{ grupo.nombre_grado }}
+      </button>
+    </h2>
+
+    <div [id]="'collapse' + i"
+         class="accordion-collapse collapse"
+         [class.show]="activeIndex === i"
+         [attr.aria-labelledby]="'heading' + i">
+         
+      <div class="accordion-body" [ngClass]="{
+         'animate__animated': true,
+         'animate__fadeIn': activeIndex === i
+       }">
+
+        <!-- Materias faltantes -->
+        <div class="mt-3">
+          <div class="text-center mt-2 mb-5">
+            <h6 class="text-muted">➕ Materias disponibles para agregar:</h6>
+          </div>
+          <div class="row">
+            <div class="col-md-6 col-lg-4 mb-2" *ngFor="let materia of getMateriasFaltantes(grupo)">
+              <div class="d-flex justify-content-between align-items-center bg-light rounded px-3 py-2 shadow-sm border">
+                <span>{{ materia.nombre_materia }}</span>
+                <button class="btn btn-add-materias" (click)="agregarMateria(grupo.id_grado, materia.id_materia)">
+                  <i class="fas fa-plus"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Materias asignadas -->
+        <ul class="list-group list-group-flush mt-3 border rounded">
+          <li *ngFor="let materia of grupo.materias" class="list-group-item d-flex justify-content-between align-items-center">
+            <span class="fw-semibold">{{ materia.nombre_materia }}</span>
+            <button class="btn btn-delete-materia" (click)="eliminarMateria(grupo.id, materia.id_materia, materia.nombre_materia, grupo.nombre_grado)">
+              <i class="fas fa-trash-alt me-1"></i>
+            </button>
+          </li>
+        </ul>
+
+        <!-- Botón para eliminar todo -->
+        <div class="text-center">
+          <button class="button mt-3" type="button" (click)="eliminarMateriaGrado(grupo.nombre_grado, grupo.id_grado)">
+          <span class="shadow"></span>
+          <span class="edge"></span>
+          <div class="front">
+            <span>Eliminar todas las materias de {{ grupo.nombre_grado }}</span>
+          </div>
+        </button>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+</div>
+
+
+
+
+<!-- Botón para agregar bloques -->
+
+
+<div class="d-inline-block mt-2 mb-5">
+  <button class="buttons asignacion" (click)="agregarBloqueAsignacion()">
+    <span class="texto"> Agregar grado con materias</span>
+    <span class="icon">
+      <i class="fa-solid fa-plus text-white"></i>
+    </span>
+  </button>
+</div>
+
+
+<!-- Bloques de asignación dinámicos -->
+<div *ngFor="let asignacion of asignaciones; let i = index"
+     class="asignacion-bloque mb-5 p-4 rounded shadow-sm bg-light position-relative">
+
+  <!-- Botón eliminar en la parte superior derecha -->
+  <button type="button"
+          class="btn btn-sm btn-danger position-absolute"
+          style="top: 10px; right: 10px; z-index: 10;"
+          (click)="eliminarAsignacion(i)">
+    <i class="fa-solid fa-times"></i>
+  </button>
+
+  <!-- Selección de grado -->
+  <label class="form-label fw-bold">Selecciona un grado:</label>
+  <select class="form-select mt-3" [(ngModel)]="asignacion.grado">
+    <option [ngValue]="null">-- Selecciona --</option>
+    <option *ngFor="let grado of grados" [ngValue]="grado">
+      {{ grado.nombre_grado }}
+    </option>
+  </select>
+
+  <!-- Lista de materias con checkboxes -->
+  <div class="chip-list d-flex flex-wrap gap-2 mt-3">
+    <label *ngFor="let materia of materias" class="materia-chip">
+      <input
+        type="checkbox"
+        [checked]="esMateriaSeleccionada(asignacion, materia.id_materia)"
+        (change)="toggleMateria(asignacion, materia, $event)" />
+      {{ materia.nombre_materia }}
+    </label>
+  </div>
+
+  <!-- Materias asignadas -->
+  <div class="mt-3">
+    <h6>Materias asignadas:</h6>
+    <div *ngFor="let mat of asignacion.materiasAsignadas"
+         class="badge bg-success me-2 p-2 mt-2">
+      {{ mat.nombre_materia }}
+      <button class="btn-close btn-close-white btn-sm ms-2" (click)="quitarMateria(asignacion, mat)"></button>
+    </div>
+  </div>
+
+</div>
+
+
+<!-- Botón final para guardar todo -->
+<div class="text-center mb-5">
+  <div class="d-inline-block">
+    <button class="buttons asignacion" (click)="guardarTodo()">
+      <span class="texto"> Guardar todo </span>
+      <span class="icon">
+        <i class="fa-solid fa-floppy-disk text-white"></i>
+      </span>
+    </button>
+  </div>
+</div>
+
+</div>

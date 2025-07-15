@@ -1,0 +1,79 @@
+
+<form (ngSubmit)="registrarPeriodo()" #formPeriodo="ngForm" class="formulario">
+    <h2 class="form-title mt-2"><i class="fa-solid fa-calendar-check"></i>&nbsp; registrar periodo academico</h2>
+    <div class="form-row">
+        <app-inputs label="Nombre del período" type="text" name="nombre_periodo" placeholder=" Nombre del período"
+            [(ngModel)]="periodo.nombre_periodo" [required]="true">
+        </app-inputs>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-6 ">
+            <div class="form-floating mb-3">
+                <input type="date" class="form-control form-date-periodo" [(ngModel)]="periodo.fecha_inicio" name="fecha_inicio"
+                    id="floatingInput" placeholder="name@example.com">
+                <label for="floatingInput">Fecha de inicio periodo academico</label>
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <div class="form-floating mb-3">
+                <input type="date" class="form-control form-date-periodo" [(ngModel)]="periodo.fecha_fin" name="fecha_fin"
+                    id="floatingInput" placeholder="name@example.com">
+                <label for="floatingInput">Fecha de fin periodo academico</label>
+            </div>
+        </div>
+    </div>
+
+   
+    <div class="text-center mt-4">
+        <app-button-submit [text]="'Registrar periodo'"></app-button-submit>
+    </div>
+</form>
+
+<div *ngIf="periodosAcademicos.length > 0">
+
+    <h2 class="form-title mt-4"><i class="fa-solid fa-calendar-check"></i>&nbsp; periodos académicos registrados</h2>
+
+    <div *ngFor="let periodo of periodosAcademicos; let i = index" class="card mb-3 p-3">
+        <h2 class="form-title two mt-4"><i class="fa-solid fa-calendar-check"></i>&nbsp; {{periodo.nombre_periodo}}</h2>
+        <div class="form-row">
+            <app-inputs label="Nombre del período" type="text" name="nombre_periodo" placeholder=" Nombre del período"
+                [(ngModel)]="periodo.nombre_periodo" [required]="true">
+            </app-inputs>
+        </div>
+
+        <div class="form-row">
+            <app-inputs label="Fecha de inicio" type="date" name="fecha_inicio" placeholder="Fecha de inicio "
+                [(ngModel)]="periodo.fecha_inicio" [required]="true">
+            </app-inputs>
+            <app-inputs label="Fecha de fin" type="date" name="fecha_fin" placeholder="Fecha de fin"
+                [(ngModel)]="periodo.fecha_fin" [required]="true">
+            </app-inputs>
+        </div>
+
+        <div class="text-center mt-2">
+            <div class="d-inline-block me-2">
+                <button class="buttons edit" (click)="editarPeriodoAcademico(periodo)">
+                    <span class="texto">Editar</span>
+                    <span class="icon">
+                        <i class="fa-solid fa-pen-to-square text-white"></i>
+                    </span>
+                </button>
+            </div>
+
+            <div class="d-inline-block">
+                <button class="buttons delete" (click)="eliminarPeriodoAcademico(periodo)">
+                    <span class="texto">Eliminar</span>
+                    <span class="icon">
+                        <i class="fa-solid fa-trash text-white"></i>
+                    </span>
+                </button>
+            </div>
+        </div>
+
+
+        <!-- Si quieres botón para guardar ese período individual -->
+    </div>
+
+</div>
+

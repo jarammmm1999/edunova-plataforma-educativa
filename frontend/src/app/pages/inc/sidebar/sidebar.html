@@ -1,0 +1,43 @@
+<app-loader *ngIf="cargando" [mensaje]="'Cargando datos...'"></app-loader>
+
+<aside class="sidebar animate-slide-in" [class.colapsado]="colapsado">
+  <div class="container-close">
+    <button class="btn-cerrar-sidebar" (click)="cerrarSidebar()">✖</button>
+  </div>
+
+  <ul class="menu">
+    <ng-container *ngFor="let item of menuDinamico">
+
+      <!-- Ítem con Submenú -->
+      <li *ngIf="item.submenu" class="menu-item" (click)="toggleSubMenu(item.titulo)">
+        <i class="{{ item.icono }}"></i>
+        <span class="item-text">{{ item.titulo }}</span>
+        <span *ngIf="submenuAbierto[item.titulo]" style="margin-left:auto;" class="SiderIcons">
+          <i class="fas fa-chevron-down animate__animated animate__fadeIn"></i>
+        </span>
+        <span *ngIf="!submenuAbierto[item.titulo]" style="margin-left:auto;" class="SiderIcons">
+          <i class="fas fa-chevron-right animate__animated animate__fadeIn"></i>
+        </span>
+      </li>
+
+      <!-- Submenú animado -->
+      <ul *ngIf="mostrarSubmenu[item.titulo]" class="submenu submenu-línea animate__animated" [ngClass]="{
+        'animate__fadeIn': submenuAbierto[item.titulo],
+        'animate__fadeOut': animando[item.titulo]
+      }">
+        <li *ngFor="let sub of item.submenu" routerLinkActive="active" [routerLink]="[sub.ruta]" >
+          <i class="{{ sub.icono }}"></i>
+          <span  class="item-text">{{ sub.titulo }}</span>
+        </li>
+      </ul>
+
+      <!-- Ítem normal -->
+      <li *ngIf="!item.submenu" class="menu-item" routerLinkActive="active" [routerLink]="[item.ruta]">
+        <i class="{{ item.icono }}"></i>
+        <span class="item-text">{{ item.titulo }}</span>
+      </li>
+
+    </ng-container>
+  </ul>
+
+</aside>

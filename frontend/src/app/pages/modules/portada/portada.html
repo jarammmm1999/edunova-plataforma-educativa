@@ -1,0 +1,76 @@
+<div class="portada-uploader container mt-4 animate__animated animate__fadeIn mt-5">
+    <!-- Área de carga -->
+    <label for="fileInput"
+        class="upload-area d-flex flex-column align-items-center justify-content-center text-center p-5 border border-2 border-dashed rounded shadow-sm bg-light position-relative animate__animated animate__zoomIn"
+        (dragover)="onDragOver($event)" (drop)="onDrop($event)">
+        <i class="fas fa-cloud-upload-alt fa-3x icono-upload-alt text-primary mb-3"></i>
+        <p class="mb-0 text-drop fw-semibold">Arrastra tus imágenes aquí o haz clic para seleccionarlas</p>
+        <input id="fileInput" type="file" (change)="onFileSelected($event)" multiple hidden />
+    </label>
+
+    <!-- Vista previa -->
+    <div class="preview-container row mt-4 g-3" *ngIf="imagenesSeleccionadas.length > 0">
+        <div class="col-6 col-md-4 col-lg-3" *ngFor="let img of imagenesSeleccionadas; let i = index">
+            <div class="card shadow-sm border-0 position-relative h-100 animate__animated animate__fadeInUp">
+                <img [src]="img.url" class="card-img-top rounded-top" alt="Preview"
+                    style="height: 180px; object-fit: cover;" />
+                <button type="button" class="btn btn-sm btn-danger position-absolute top-0 end-0 m-2 rounded-circle"
+                    (click)="eliminarImagen(i)">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Botón guardar con animación personalizada -->
+    <div class="text-center mt-4 animate__animated animate__fadeInUp animate__delay-1s">
+        <div class="text-center mt-2">
+            <app-button-submit [text]="'Guardar Portada'" (click)="guardarImagenes()"></app-button-submit>
+        </div>
+
+    </div>
+</div>
+
+<h2 class="form-title mt-5"><i class="fa-solid fa-image "></i>&nbsp; imagenes de portadas</h2>
+
+<div *ngFor="let grupo of imagenesAgrupadas | keyvalue" class="grupo-imagenes">
+    <div class="alert alert-primary" role="alert">
+        <div class="text-center">
+            Imágenes de portada – ID {{ grupo.key }} ({{ grupo.value.length }} imagen{{ grupo.value.length > 1 ? 'es' :
+            '' }})
+        </div>
+    </div>
+    <div class="contenedor-cards">
+        <div class="card-imagen" *ngFor="let imagen of grupo.value">
+            <img [src]="CargarImagenes(5, imagen.nombre_imagen)" [alt]="imagen.nombre_imagen" />
+            <div class="info-imagen">
+                <p class="fecha">Subida: {{ imagen.fecha_subida | date:'shortDate' }}</p>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="text-center mt-4">
+        <div class="d-inline-block me-2">
+            <button [ngClass]="grupo.value[0]?.estado == 1 ? 'buttons activo' : 'buttons edit'"
+                (click)="activarImagen(grupo.key, grupo.value[0]?.estado)">
+                <span class="texto">{{ grupo.value[0]?.estado == 1 ? 'Desactivar ' : 'Activar' }}</span>
+                <span class="icon">
+                    <i *ngIf="grupo.value[0]?.estado == 1" class="fa-solid fa-circle-check text-white"></i>
+                    <i *ngIf="grupo.value[0]?.estado != 1" class="fa-solid fa-lock text-white"></i>
+                </span>
+
+            </button>
+        </div>
+
+        <div class="d-inline-block">
+            <button class="buttons delete" (click)="eliminarImagenportada(grupo.key)">
+                <span class="texto">Eliminar</span>
+                <span class="icon">
+                    <i class="fa-solid fa-trash text-white"></i>
+                </span>
+            </button>
+        </div>
+    </div>
+
+</div>

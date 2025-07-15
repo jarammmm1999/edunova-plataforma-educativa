@@ -1,0 +1,54 @@
+<app-loader *ngIf="cargandodatos" [mensaje]="'Cargando instituciones...'"></app-loader>
+<!-- header instituciones-->
+<div class="header-title-institucion d-flex align-items-center justify-content-center">
+  <h4 class="mb-0 text-center">Selecciona tu Institución</h4>
+</div>
+
+<!-- Buscador -->
+<app-buscador [placeholder]="'Buscar instituciones...'" (buscar)="filtrarInstituciones($event)">
+</app-buscador>
+
+<!-- Error de conexión -->
+<div *ngIf="error && !cargandodatos">
+  <app-error-message [mensaje]="'Hubo un error de conexión. No se pueden mostrar las instituciones.'"
+    [imagen]="'error-conexion.png'">
+  </app-error-message>
+</div>
+<!-- No hay instituciones encontradas -->
+<div *ngIf="!error && !cargandodatos && InstitucionesRegistradas.length === 0">
+  <app-error-message [mensaje]="'No se encontraron instituciones registradas.'" [imagen]="'error-conexion.png'">
+  </app-error-message>
+</div>
+
+<!-- No hay instituciones encontradas -->
+<div *ngIf="!error && institucionesFiltradas.length === 0">
+  <app-error-message [mensaje]="'No se encontraron instituciones que coincidan con tu búsqueda.'" [imagen]="'error-busqueda.png'">
+  </app-error-message>
+</div>
+
+<!-- Contenedor de instituciones -->
+<div id="contenedor-instituciones" class="container py-4">
+  <div class="row g-4" *ngIf="!error && !cargandodatos && institucionesFiltradas.length > 0">
+    <div class="col-sm-12 col-md-6 col-lg-4" *ngFor="let institucion of institucionesFiltradas">
+      <div class="card tarjeta-institucion animate__animated animate__fadeInUp h-100">
+
+        <!-- Imagen -->
+        <div class="overflow-hidden rounded-top">
+          <img [src]="CargarImagenes(1, 'school.jpg')" class="card-img-top img-fluid institution-img"
+            alt="Logo de {{ institucion.nombre_institucion }}" />
+        </div>
+
+        <!-- Contenido -->
+        <div class="card-body d-flex flex-column justify-content-between">
+          <h5 class="card-title fw-bold">{{ institucion.nombre_institucion }}</h5>
+          <p class="text-muted small mb-3">Educación con calidad y compromiso</p>
+          <a [routerLink]="['/sede', institucion.codigo_institucion]" class="btn btn-instituciones">
+            Ver Sedes
+          </a>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+

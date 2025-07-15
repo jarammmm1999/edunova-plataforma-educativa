@@ -1,0 +1,5 @@
+<div class="buscador-simple mt-3 animate__animated animate__zoomIn">
+  <i class="fa fa-search icono-lupa"></i>
+  <input type="text" class="input-busqueda" [placeholder]="placeholder" [value]="valor" (input)="onInputChange($event)"
+    (blur)="onTouched()" />
+</div>

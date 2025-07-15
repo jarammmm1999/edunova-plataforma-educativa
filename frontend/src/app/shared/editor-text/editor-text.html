@@ -1,0 +1,8 @@
+<quill-editor
+  [(ngModel)]="contenido"
+  [modules]="modules"
+  (onContentChanged)="onContentChanged($event)"
+  theme="snow"
+  [placeholder]="placeholder"
+  class="custom-quill">
+</quill-editor>

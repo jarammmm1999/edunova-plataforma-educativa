@@ -1,0 +1,113 @@
+<header class="header-container">
+  <!-- CINTA SUPERIOR -->
+  <div class="header-top"></div>
+
+  <!-- CONTENIDO PRINCIPAL DEL HEADER -->
+  <div class="header-main">
+    <!-- LADO IZQUIERDO: Logo -->
+    <div class="logo-wrapper">
+      <img *ngIf="sede?.logo_sede" [src]="CargarImagenes(4, sede.logo_sede)" class="logo" alt="Logo Sede" />
+    </div>
+
+    <!-- CENTRO: Nombre de la sede -->
+    <div class="sede-nombre-wrapper">
+      <h2 *ngIf="sede?.nombre_sede">{{ sede.nombre_sede }}</h2>
+    </div>
+
+    <!-- DERECHA: Íconos + Usuario -->
+    <div class="header-actions">
+      <!-- Mensajes -->
+      <div class="icon-wrapper" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight">
+        <i class="fas fa-comment-alt"></i>
+        <span class="badge">0</span>
+        <div class="dropdown-panel" *ngIf="mostrarMensajes">
+          <p>No hay mensajes nuevos.</p>
+        </div>
+      </div>
+
+      <!-- Notificaciones -->
+      <div class="icon-wrapper" (click)="toggleNotificaciones()">
+        <i class="fas fa-bell"></i>
+        <span class="badge">2</span>
+        <div class="dropdown-panel" *ngIf="mostrarNotificaciones">
+           <div class="ios-modern-settings__container animate__animated animate__fadeInDown">
+            <div class="ios-modern-settings__header">Notificaciones</div>
+
+          
+            <!-- Tarjetacerrar sesion -->
+            <div class="ios-modern-settings__card" (click)="cerrarSesion(tokenUser)">
+                <div class="ios-modern-settings__icon" style="background: linear-gradient(135deg, #ff3b30, #ff7964);">
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                </div>
+                <div class="ios-modern-settings__content" >
+                    <div class="ios-modern-settings__title">Cerrar sesión</div>
+                    <div class="ios-modern-settings__description">
+                           Salir de la plataforma
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+        </div>
+      </div>
+
+      <!-- Usuario -->
+      <div class="usuario-wrapper" (click)="toggleConfiguraciones()">
+        <div class="avatar">
+          <img *ngIf="usuario?.imagen" [src]="CargarImagenes(3, usuario.imagen)" alt="{{ usuario.imagen }}" />
+        </div>
+        <div class="nombre">
+          <span>{{ usuario?.nombres }}</span>
+          <i class="fas fa-chevron-down"></i>
+        </div>
+
+        <div class="dropdown-panel" *ngIf="mostrarConfiguraciones">
+
+        <div class="ios-modern-settings__container animate__animated animate__fadeInDown">
+            <div class="ios-modern-settings__header">Configuración</div>
+
+             <!-- Perfil de usuario -->
+            <div class="ios-modern-settings__card" (click)="irAPerfil()">
+              <div class="ios-modern-settings__icon" style="background: linear-gradient(135deg, #007bff, #4facfe);">
+                <i class="fa-solid fa-user"></i>
+              </div>
+              <div class="ios-modern-settings__content">
+                <div class="ios-modern-settings__title">Mi perfil</div>
+                <div class="ios-modern-settings__description">
+                  Ver y editar información personal
+                </div>
+              </div>
+            </div>
+        
+            <!-- Cerrar sesion -->
+            <div class="ios-modern-settings__card" (click)="cerrarSesion(tokenUser)">
+                <div class="ios-modern-settings__icon" style="background: linear-gradient(135deg, #ff3b30, #ff7964);">
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                </div>
+                <div class="ios-modern-settings__content" >
+                    <div class="ios-modern-settings__title">Cerrar sesión</div>
+                    <div class="ios-modern-settings__description">
+                           Salir de la plataforma
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        </div>
+        
+      </div>
+    </div>
+  </div>
+</header>
+
+
+<div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasRight" aria-labelledby="offcanvasRightLabel">
+    <div class="offcanvas-header">
+        <h5 id="offcanvasRightLabel">Offcanvas right</h5>
+        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body">
+        ...
+    </div>
+</div>

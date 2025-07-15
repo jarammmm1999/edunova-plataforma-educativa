@@ -1,0 +1,449 @@
+<div *ngIf="bloquearPantalla" class="pantalla-bloqueo"></div>
+
+
+<div class="contenedor-list-user">
+    <div class="barra-superior mb-3 mt-3">
+        <app-buscador [placeholder]="'Buscar usuario...'" [(ngModel)]="filtroGlobal"></app-buscador>
+        <div class="exportar-contenedor">
+            <button class="buttonDownload" (click)="exportarExcel()">Descargar excel</button>
+            <button class="buttonDownload" (click)="exportarPDF()">Descargar pdf</button>
+        </div>
+    </div>
+    <div class="table-responsive">
+        <table class="tabla-usuarios mt-2">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Imagen</th>
+                    <th>Documento</th>
+                    <th>Nombre</th>
+                    <th>Correo</th>
+                    <th>Teléfono</th>
+                    <th>Rol</th>
+                    <th>Grado</th>
+                    <th>Grupo</th>
+                    <th>Estado</th>
+                    <th>Editar</th>
+                    <th>Eliminar</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let usuario of usuariosFiltrados(); let i = index" [class.activo]="usuario.estado === 1">
+                    <td>{{ i + 1 }}</td>
+                    <td>
+                        <div class="avatar">
+                            <a *ngIf="usuario?.imagen" [href]="CargarImagenes(3, usuario.imagen)" data-lightbox="perfil"
+                                [attr.data-title]="usuario?.nombres || 'Usuario'">
+                                <img [src]="CargarImagenes(3, usuario.imagen)" alt="{{ usuario.imagen }}"
+                                    class="img-thumbnail" />
+                            </a>
+                        </div>
+
+                    </td>
+                    <td>{{ usuario.numero_documento }}</td>
+                    <td>{{ usuario.nombre_usuario }}</td>
+                    <td>{{ usuario.correo_usuario }}</td>
+                    <td>{{ usuario.telefono_usuario }}</td>
+                    <td>{{ usuario.rol }}</td>
+                    <td>{{ usuario.grado || '-' }}</td>
+                    <td>{{ usuario.grupo || '-' }}</td>
+                    <td
+                        [innerHTML]="usuario.estado_desecriptado == 1 ? '<span class=\'badge bg-success\'>Activo</span>' : '<span class=\'badge bg-danger\'>Inactivo</span>'">
+                    </td>
+
+                    <td>
+                        <button type="button" class="btn btn-primary" data-bs-toggle="offcanvas" data-bs-target="#offcanvasFull"
+                            aria-controls="offcanvasFull" (click)="editarUsuario(usuario)">
+                            <i class="fa-solid fa-user-pen"></i>
+                        </button>
+                    </td>
+                    <td>
+                        <button type="button" class="btn btn-danger" (click)="eliminarUsuario(usuario)">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
+                    </td>
+
+                </tr>
+            </tbody>
+        </table>
+        <div class="paginacion-contenedor">
+            <label class="label-cantidad">Mostrar:
+                <input type="number" [(ngModel)]="usuariosPorPagina" (change)="actualizarPaginacion()" min="1"
+                    class="input-registros">
+            </label>
+        
+            <div class="botones-paginacion">
+                <button (click)="paginaAnterior()" [disabled]="paginaActual === 1" class="boton-paginador">«</button>
+        
+                <ng-container *ngFor="let pagina of totalPaginasArray">
+                    <button (click)="irAPagina(pagina)" [class.activo]="pagina === paginaActual" class="boton-paginador">
+                        {{ pagina }}
+                    </button>
+                </ng-container>
+        
+                <button (click)="paginaSiguiente()" [disabled]="paginaActual === totalPaginas"
+                    class="boton-paginador">»</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="offcanvas offcanvas-start offcanvas-fullscreen" tabindex="-1" id="offcanvasFull"
+    aria-labelledby="offcanvasFullLabel">
+    <div class="offcanvas-header">
+        <h5 class="offcanvas-title text-white" id="offcanvasFullLabel">Editar Usuario: {{ usuarioSeleccionado?.nombre_usuario }}</h5>
+        <button type="button" class="btn-close text-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body">
+       <form (ngSubmit)="guardarCambios()" #formEditar="ngForm" class="login-form form-grid">
+        <div class="avatar-preview">
+            <img [src]="imagenPrevia || CargarImagenes(3, usuarioSeleccionado.imagen)" class="logo"
+              alt="Imagen de perfil" />
+          </div>
+          <div class="form-row">
+            <app-inputs label="Documento" type="number" name="documento" placeholder="Ingrese su documento"
+              [(ngModel)]="usuarioSeleccionado.numero_documento" [required]="true">
+            </app-inputs>
+
+            <app-inputs label="Nombres" type="text" name="nombres" placeholder="Ingrese sus Nombres"
+              [(ngModel)]="usuarioSeleccionado.nombre_usuario" [required]="true">
+            </app-inputs>
+            <app-inputs label="Correo" type="email" name="correo" placeholder="Ingrese su correo"
+              [(ngModel)]="usuarioSeleccionado.correo_usuario" [required]="true">
+            </app-inputs>
+          </div>
+
+           <div class="form-row">
+            <app-inputs label="Telefono" type="number" name="telefono" placeholder="Ingrese su documento"
+              [(ngModel)]="usuarioSeleccionado.telefono_usuario" [required]="true">
+            </app-inputs>
+
+            <div class="form-group">
+              <select class="form-select " [(ngModel)]="usuarioSeleccionado.id_sexo" name="sexo" required>
+                <option value="">Seleccione un sexo</option>
+                <option *ngFor="let s of sexos" [value]="s.id_sexo">
+                  {{ s.descripcion }}
+                </option>
+              </select>
+            </div>
+          </div>
+
+          <div class="drop-zone" (dragover)="onDragOver($event)" (drop)="onDrop($event)" (click)="fileInput.click()">
+            <ng-container *ngIf="!infoImagen">
+              <p class="text-center">Haz clic o suelta una imagen aquí</p>
+            </ng-container>
+
+            <ng-container *ngIf="infoImagen">
+              <p><strong>Nombre:</strong> {{ infoImagen.nombre }}</p>
+              <p><strong>Tipo:</strong> {{ infoImagen.tipo }}</p>
+              <p><strong>Peso:</strong> {{ infoImagen.peso }} KB</p>
+            </ng-container>
+
+          </div>
+          <input type="file" #fileInput accept="image/*" hidden (change)="onFileSelected($event)" />
+
+          <div class="form-row">
+            <app-inputs label="Contraseña" type="password" name="contrasena" placeholder="Ingrese su contraseña"
+              [(ngModel)]="usuarioSeleccionado.contrasena" [required]="true">
+            </app-inputs>
+            <app-inputs label="Confirmar Contraseña" type="password" name="confirm-contrasena"
+              placeholder="confirmar contraseña" [(ngModel)]="usuarioSeleccionado.confirmContrasena" [required]="true">
+            </app-inputs>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <select class="form-select " [(ngModel)]="usuarioSeleccionado.estado" name="estado" required>
+                <option value="">Seleccione un estado</option>
+                <option *ngFor="let e of estados" [value]="e.id_estado">
+                  {{ e.descripcion }}
+                </option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <select class="form-select" [(ngModel)]="usuarioSeleccionado.id_rol" name="roles" required>
+                <option value="">Seleccione un rol</option>
+                <option *ngFor="let r of roles" [value]="r.id_rol">
+                  {{ r.descripcion }}
+                </option>
+              </select>
+            </div>
+
+          </div>
+
+            <div class="text-center mt-2">
+                <app-button-submit [text]="'Actualizar Usuario'"></app-button-submit>
+            </div>
+
+            <!-----------------cursos------------------->
+        <form *ngIf="usuarioSeleccionado?.rol?.toLowerCase() === 'estudiante'" (ngSubmit)="ActualizarGradosUsuarios()"
+          #formgrado="ngForm" class="login-form form-grid mt-5">
+          <h2 class="form-title"><i class="fa-solid fa-users-between-lines"></i>&nbsp; Grado</h2>
+          <div class="form-row">
+            <div class="form-group">
+              <select class="form-select" [(ngModel)]="usuarioSeleccionado.id_grado" name="grado" required
+                (change)="onGradoSeleccionado($event)">
+                <option value="">Seleccione un grado</option>
+                <option *ngFor="let g of grados" [value]="g.id_grado">
+                  {{ g.nombre_grado }}
+                </option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <select class="form-select" [(ngModel)]="usuarioSeleccionado.id_grupo" name="grupo" required>
+                <option value="">Seleccione un grupo</option>
+                <option *ngFor="let f of grupos" [value]="f.id_grupo">
+                  {{ f.nombre_grupo }}
+                </option>
+              </select>
+            </div>
+          </div>
+
+           <div class="text-center mt-2">
+                <app-button-submit [text]="'Actualizar Grado'"></app-button-submit>
+            </div>
+
+        </form>
+
+        <!-----------------Documentos------------------->
+
+        <form *ngIf="usuarioSeleccionado?.rol?.toLowerCase() === 'estudiante'" (ngSubmit)="ActualizarDocumentosUsuarios()" #formgrado="ngForm"
+            class="documento-form form-grid mt-5">
+            <h2 class="form-title"><i class="fa-solid fa-users-between-lines"></i>&nbsp; Documentos</h2>
+            <div class="upload-box" (drop)="onDropArchivo($event)" (dragover)="onDragOverArchivo($event)"
+                (click)="fileInputDocs.click()">
+                <p class="title-ps text-center fw-bold">Haz clic o suelta los documentos aquí</p>
+                <input type="file" multiple (change)="onFileSelectArchivo($event)" hidden #fileInputDocs />
+            </div>
+        
+            <div *ngFor="let doc of documentos; let i = index" class="card mb-1 shadow-sm">
+                <div class="card-body d-flex align-items-center justify-content-between">
+                    <div class="flex-grow-1 me-3">
+                        <strong *ngIf="doc.archivo">{{ doc.archivo.name }}</strong>
+                        <input type="text" class="form-control mt-2" placeholder="Nombre personalizado"
+                            [(ngModel)]="doc.nombrePersonalizado" [ngModelOptions]="{ standalone: true }" />
+                    </div>
+                    <button class="btn btn-danger" (click)="eliminarDocumento(i)">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            </div>
+        
+            <div class="card-container">
+                <div *ngFor="let doc of documentosUsuario" class="file-card-profesional animate__animated animate__fadeInUp">
+                    <div class="file-icon-container">
+                        <img *ngIf="usuarioSeleccionado?.numero_documento" [src]="CargarImagenes(1, 'pdf.png')" alt="PDF"
+                            class="file-icon" />
+                        <div class="file-overlay">
+                            <a [href]="mostrar_documentos_usuario(usuarioSeleccionado.numero_documento, doc.nombre)"
+                                target="_blank" rel="noopener noreferrer">
+                                <button type="button" class="action-btn view" title="Ver">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </a>
+                            <button type="button" class="action-btn delete" title="Eliminar"
+                                (click)="eliminar_documentos_usuario(doc.nombre,doc.descripcion,usuarioSeleccionado.id_matricula,usuarioSeleccionado.documento_encription)">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="file-title">{{ doc.descripcion }}</div>
+                </div>
+            </div>
+            <div class="text-center mt-2">
+                <app-button-submit [text]="'Cargar Nuevos documentos'"></app-button-submit>
+            </div>
+        
+        </form>
+
+
+        <!-----------------Acudientes------------------->
+
+        <form *ngIf="usuarioSeleccionado?.rol?.toLowerCase() === 'estudiante'" (ngSubmit)="RegistrarAcudientes(usuarioSeleccionado.documento_encription)" #formgrado="ngForm"
+          class="acudientes-form form-grid mt-5">
+          <h2 class="form-title"><i class="fa-solid fa-users-between-lines"></i>&nbsp; Acudientes</h2>
+
+          <div class="contaider-button-add-acudientes d-flex justify-content-end mb-3">
+            <button class="Btn" type="button" (click)="agregarAcudiente()">
+              <div class="sign">+</div>
+              <div class="text">Agregar </div>
+            </button>
+          </div>
+          <!-----------------agregar mas acudientes------------------->
+          <div *ngFor="let acudiente of acudientes; let i = index; trackBy: trackByIndex"
+            class="card p-3 mb-3 card-acudientes animate__animated animate__zoomIn">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <h5 class="text-acudiente fw-bold mb-0">Acudiente {{ i + 1 }}</h5>
+              <button type="button" class="btn btn-danger btn-sm" (click)="eliminarAcudiente(i)">
+                <i class="fas fa-times"></i>
+              </button>
+            </div>
+
+            <div class="form-row">
+              <app-inputs label="Documento" type="number" [name]="'documento_' + i" placeholder=" documento"
+                [(ngModel)]="acudiente.numeroDocumento" [required]="true">
+              </app-inputs>
+              <app-inputs label="Nombre Acudiente" type="text" [name]="'name_acudiente_' + i"
+                placeholder="nombre " [(ngModel)]="acudiente.nombres" [required]="true">
+              </app-inputs>
+              <app-inputs label="Correo Acudiente" type="email" [name]="'email-acudiente_' + i "
+                placeholder="correo" [(ngModel)]="acudiente.correo" [required]="true">
+              </app-inputs>
+            </div>
+
+            <div class="form-row">
+              <app-inputs label="Telefono Acudiente" type="text" [name]="'telefono_' + i" placeholder="telefono"
+                [(ngModel)]="acudiente.telefono" [required]="true">
+              </app-inputs>
+              <app-inputs label="Dirección" type="text" [name]="'direccion_' + i" placeholder="direccion"
+                [(ngModel)]="acudiente.direccion" [required]="true">
+              </app-inputs>
+              <div class="form-group">
+                <select class="form-select " [(ngModel)]="acudiente.sexo" [name]="'sexo_' + i" required>
+                  <option value="">Seleccione un sexo</option>
+                  <option *ngFor="let s of sexos" [value]="s.id_sexo">
+                    {{ s.descripcion }}
+                  </option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <app-inputs label="Constraseña" type="password" [name]="'constraseña_' + i"
+                placeholder=" constraseña" [(ngModel)]="acudiente.contrasena" [required]="true">
+              </app-inputs>
+              <div class="form-group">
+                <select class="form-select " [(ngModel)]="acudiente.parentesco" [name]="'sexo_'+ i" required>
+                  <option value="">Seleccione un Parentesco</option>
+                  <option value="Padre">Padre</option>
+                  <option value="Madre">Madre</option>
+                  <option value="Tío">Tío</option>
+                  <option value="Abuelo">Abuelo</option>
+                  <option value="Otro">Otro</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-----------------mostrar acudientes------------------->
+          <div class="profile-cards-container">
+            <div class="profile-card animate__animated animate__fadeInUp" *ngFor="let acudiente of acudientesUsuario">
+              <div class="profile-img">
+                <img [src]="imagenPrevia || CargarImagenes(1, 'AvatarNone.png')" class="logo"
+                  alt="Imagen de perfil" />
+              </div>
+              <div class="profile-info">
+                <h4>{{ acudiente.nombres }}</h4>
+                <p><strong>Documento:</strong> {{ acudiente.numero_documento }}</p>
+                <p><strong>Telefono:</strong> {{ acudiente.telefono }} &nbsp;
+                  <a class="whatsapp-icon" [href]="'https://wa.me/57' + acudiente.telefono" target="_blank"
+                    rel="noopener" title="Contactar por WhatsApp">
+                    <i class="fab fa-whatsapp"></i>
+                  </a>
+                </p>
+                <p><strong>Correo:</strong> {{ acudiente.correo }} &nbsp;
+                  <a class="correo-icon" [href]="'mailto:' + acudiente.correo" title="Enviar correo">
+                    <i class="fas fa-paper-plane"></i>
+                  </a>
+                </p>
+                <p><strong>Dirección:</strong> {{ acudiente.direccion }} &nbsp;
+                  <a class="direccion-icon"
+                    [href]="'https://www.google.com/maps/search/?api=1&query=' + encodeDireccion(acudiente.direccion)"
+                    target="_blank" rel="noopener" title="Ver en Google Maps">
+                    <i class="fas fa-map"></i>
+                  </a>
+                </p>
+                <p><strong>Parentesco:</strong> {{ acudiente.parentesco }}</p>
+
+
+                <div class="text-center mt-4">
+                  <div class="d-inline-block me-2">
+                    <button class="buttons edit" type="button" (click)="toggleCollapse(acudiente.id_acudiente)">
+                      <span class="texto">Editar</span>
+                      <span class="icon">
+                        <i class="fa-solid fa-pen-to-square text-white"></i>
+                      </span>
+                    </button>
+                  </div>
+                
+                  <div class="d-inline-block">
+                    <button class="buttons delete" type="button" (click)="eliminar_acudiente_usuario(acudiente)">
+                      <span class="texto">Eliminar</span>
+                      <span class="icon">
+                        <i class="fa-solid fa-trash text-white"></i>
+                      </span>
+                    </button>
+                  </div>
+                </div>
+
+                <!-- Collapse controlado por Angular -->
+              <div #collapseRef class="collapse mt-3" [id]="'collapseAcudiente' + acudiente.id_acudiente">
+                <div class="card card-body">
+                  <div class="row g-3">
+                    <div class="col-md-6">
+                      <app-inputs label="Nombre" type="text" name="nombre{{acudiente.id_acudiente}}"
+                        [(ngModel)]="acudiente.nombres" [required]="true">
+                      </app-inputs>
+                    </div>
+                    <div class="col-md-6">
+                      <app-inputs label="Teléfono" type="text" name="telefono{{acudiente.id_acudiente}}"
+                        [(ngModel)]="acudiente.telefono" [required]="true">
+                      </app-inputs>
+                    </div>
+                    <div class="col-md-6">
+                      <app-inputs label="Correo" type="text" name="correo{{acudiente.id_acudiente}}"
+                        [(ngModel)]="acudiente.correo" [required]="true">
+                      </app-inputs>
+                    </div>
+                    <div class="col-md-6">
+                      <app-inputs label="Dirección" type="text" name="direccion{{acudiente.id_acudiente}}"
+                        [(ngModel)]="acudiente.direccion" [required]="true">
+                      </app-inputs>
+                    </div>
+                    <div class="col-md-6">
+                      <select class="form-select" [(ngModel)]="acudiente.parentesco"
+                        name="parentesco{{acudiente.id_acudiente}}" required>
+                        <option value="">Seleccione un Parentesco</option>
+                        <option value="Padre">Padre</option>
+                        <option value="Madre">Madre</option>
+                        <option value="Tío">Tío</option>
+                        <option value="Abuelo">Abuelo</option>
+                        <option value="Otro">Otro</option>
+                      </select>
+                    </div>
+                    <div class="col-md-6">
+                      <select class="form-select" [(ngModel)]="acudiente.sexo" name="sexo{{acudiente.id_acudiente}}" required>
+                        <option value="">Seleccione un sexo</option>
+                        <option *ngFor="let s of sexos" [value]="s.id_sexo">
+                          {{ s.descripcion }}
+                        </option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div class="mt-3 text-center">
+                    <button class="btn btn-edit-acudiente btn-sm" type="button"
+                      (click)="actualizarAcudiente(acudiente)">
+                      <i class="fas fa-save"></i> Guardar cambios
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              </div>
+            </div>
+          </div>
+
+           <div class="text-center mt-2">
+                <app-button-submit [text]="'Cargar Nuevos acudientes'"></app-button-submit>
+            </div>
+
+        </form>
+
+
+       </form>
+    </div>
+</div>

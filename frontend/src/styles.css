@@ -1,0 +1,110 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
+@import 'bootstrap/dist/css/bootstrap.min.css';
+
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Roboto', sans-serif;
+  }
+
+   .header-title-institucion {
+    width: 100%;
+    height: 60px;
+    background: linear-gradient(90deg, #003366 0%, #005999 100%) ;
+    color: white;
+    padding: 0 1rem;
+  }
+
+.tarjeta-institucion {
+  border: none;
+  border-radius: 16px;
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+}
+
+.tarjeta-institucion:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 16px 32px rgba(0, 0, 0, 0.12);
+}
+
+.institution-img {
+  height: 180px;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.tarjeta-institucion:hover .institution-img {
+  transform: scale(1.03);
+}
+
+.card-title {
+  color:#005999;
+  font-size: 1.1rem;
+}
+
+.btn-instituciones {
+  border: none;
+  outline: none;
+  background-color: #003366;
+  padding: 10px 24px;
+  font-size: 13px;
+  font-weight: 700;
+  color: #ffffff;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 0 #0195ff;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  position: relative;
+  z-index: 1;
+  overflow: hidden;
+}
+
+.btn-instituciones::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, #0195ff 0%, #00c9ff 100%);
+  z-index: -1;
+  transition: left 0.4s ease;
+}
+
+.btn-instituciones:hover::before {
+  left: 0;
+}
+
+.btn-instituciones:hover {
+  color: #fff;
+  box-shadow: 0 6px 12px rgba(1, 149, 255, 0.4);
+  transform: translateY(-2px);
+}
+
+.btn-instituciones:active {
+  transform: translateY(2px);
+  box-shadow: none;
+}
+
+/************************************************************************************/
+input:invalid {
+  box-shadow: none !important;
+}
+
+input::-webkit-validation-bubble,
+input::-webkit-inner-spin-button,
+input::-webkit-outer-spin-button {
+  display: none !important;
+}
+
+input:invalid::-webkit-calendar-picker-indicator {
+  opacity: 0;
+}
+
+input:invalid::after,
+input:invalid::before {
+  display: none !important;
+}

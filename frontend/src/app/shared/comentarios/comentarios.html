@@ -1,0 +1,51 @@
+<div *ngFor="let c of comentarios" class="comentario-box ">
+
+  <div class="d-flex align-items-center mb-1">
+    <img [src]="CargarImagenes(3, c.imagen_usuario)" width="36" height="36" class="rounded-circle me-2 border" />
+    <div>
+      <strong>{{ c.nombre_usuario }}</strong>
+      <div class="text-muted small">{{ c.fecha_creacion }}</div>
+    </div>
+  </div>
+
+<!-- Mostrar texto o editor -->
+<div class="comentario-contenido mb-2" *ngIf="!c.editandoComentario" [innerHTML]="decodeHTML(c.comentario)"></div>
+<div *ngIf="c.editandoComentario" class="mb-2">
+  <textarea [(ngModel)]="c.textoEditado" class="form-control form-control-sm textarea-foro" rows="2"></textarea>
+  <div class="mt-2">
+    <button class="btn btn-success btn-sm me-2" (click)="guardarEdicionComentario(c)">Actualizar <i class="fa-regular fa-paper-plane"></i> </button>
+    <button class="btn btn-secondary btn-sm" (click)="cancelarEdicionComentario(c)">Cancelar <i class="fa-solid fa-xmark"></i></button>
+  </div>
+</div>
+
+
+  <button class="btn btn-sm p-0 text-ver-comnetarios" (click)="responderAComentario(c)">Responder</button>
+  
+  <button class="btn btn-sm  p-0 mx-2 text-danger" *ngIf="c.creado_por == usuario?.documento"   (click)="eliminarComentario(c)">Eliminar comentario</button>
+  
+  <button *ngIf="c.creado_por == usuario?.documento" class="btn btn-sm p-0 text-ver-comnetarios" (click)="editarComentario(c)">
+    Editar comentario
+  </button>
+
+  <!-- Formulario de respuesta -->
+  <div *ngIf="c.mostrandoRespuesta" class="mt-4">
+    <textarea [(ngModel)]="c.nuevaRespuesta" class="form-control form-control-sm textarea-foro" rows="2" placeholder="Tu respuesta..."></textarea>
+    <div class="mt-3">
+      <button class="btn btn-success btn-sm me-2" (click)="enviarRespuestaHija(c)">Enviar <i class="fa-regular fa-paper-plane"></i></button>
+      <button class="btn btn-secondary btn-sm" (click)="c.mostrandoRespuesta = false">Cancelar <i class="fa-solid fa-xmark"></i></button>
+    </div>
+  </div>
+<!-- Botón para mostrar u ocultar respuestas -->
+<div *ngIf="c.respuestas?.length > 0" class="mt-2">
+  <button class="btn p-0 text-ver-comnetarios" (click)="c.mostrarRespuestas = !c.mostrarRespuestas">
+    {{ c.mostrarRespuestas ? 'Ocultar respuestas ▲' : 'Ver respuestas ▼' }}
+  </button>
+</div>
+
+<!-- Respuestas anidadas -->
+<div class="respuestas-container mt-3" *ngIf="c.mostrarRespuestas">
+  <app-comentarios [comentarios]="c.respuestas" (refrescarComentarios)="refrescarComentarios.emit()"></app-comentarios>
+</div>
+
+  
+</div>

@@ -1,0 +1,1684 @@
+<h2 class="form-title mt-4"><i class="fa-solid fa-book"></i>&nbsp; &nbsp; {{titulo}}</h2>
+
+<div *ngIf="usuario?.id_rol == 3 ">
+    <div class="mt-3 mb-4">
+        <button type="button" data-bs-toggle="modal" data-bs-target="#modalActualizarImagenPortada"
+            class="btn btn-seleccion-materia">Agregar Imagen de portada Materia</button>
+        <button type="button" data-bs-toggle="modal" data-bs-target="#modalAgregarTema"
+            class="btn btn-seleccion-materia">Agrear tema
+            educativos</button>
+    </div>
+</div>
+
+
+<div cdkDropList cdkDropListOrientation="mixed" class="contenedor-temas" (cdkDropListDropped)="usuario?.id_rol == 3 ? moverTema($event) : null">
+    <div *ngFor="let tema of temasEducativos; let i = index" cdkDrag class="tema-tab" [ngClass]="{
+         'active': i === indiceActivo,
+         'tema-activo': tema.estado === 'activo',
+         'tema-inactivo': tema.estado === 'inactivo'
+       }" (click)="seleccionarTema(i)">
+        {{ tema.titulo_tema }}
+    </div>
+</div>
+
+
+
+
+<div class="tab-content p-3 bg-white border border-top-0 rounded-bottom shadow-sm">
+    <div *ngIf="temasEducativos.length > 0">
+
+        <!-- CONFIGURACION TEMAS EDUCATIVOS -->
+
+        <div *ngIf="usuario?.id_rol == 3 ">
+
+        <div class="d-flex flex-wrap gap-2 justify-content-between botones-tema">
+            <!-- Botón Editar -->
+            <button class="btn btn-outline-primary flex-fill btn-config-temas" (click)="ActualizarNombreTema()">
+                <i class="fas fa-edit me-1"></i> Editar tema {{ temaSeleccionado.titulo_tema }}
+            </button>
+
+            <!-- Botón Eliminar -->
+            <button class="btn btn-outline-danger flex-fill btn-config-temas" (click)="eliminar_temas_educativos()">
+                <i class="fas fa-trash-alt me-1"></i> Eliminar tema {{ temaSeleccionado.titulo_tema }}
+            </button>
+
+            <!-- Botón Activar / Desactivar -->
+            <button class="btn btn-outline-info flex-fill btn-config-temas"
+                (click)="Activar_desactivar_temas_educativos()">
+                <i class="fas me-1" [ngClass]="temaSeleccionado.estado === 'activo' ? 'fa-ban' : 'fa-check-circle'"></i>
+                {{ temaSeleccionado.estado === 'activo' ? 'Desactivar' : 'Activar' }} tema {{
+                temaSeleccionado.titulo_tema }}
+            </button>
+        </div>
+
+
+        <!-- LISTA DE CONTENIDOS QUE SE PUEDEN ARRASTRAR -->
+
+        <div class="mt-4 mb-3">
+            <h6 class="fw-bold mb-3">Agregar contenido al tema:</h6>
+            <div class="d-flex gap-2 flex-wrap mt-2">
+                <button class="btn btn-outline-primary btn-sm" (click)="abrirModalTexto()">
+                    <i class="fas fa-pencil-alt me-1"></i> Texto
+                </button>
+                <button class="btn btn-outline-success btn-sm" (click)="abrirModalImagen()">
+                    <i class="fas fa-image me-1"></i> Imagen
+                </button>
+                <button class="btn btn-outline-secondary btn-sm" (click)="abrirModalArchivo()">
+                    <i class="fas fa-paperclip me-1"></i> Archivo
+                </button>
+                 <button class="btn btn-outline-info btn-sm" (click)="abrirModalVideos()">
+                    <i class="fa-solid fa-video"></i> Videos
+                </button>
+                <button class="btn btn-outline-warning btn-sm" data-bs-toggle="offcanvas" data-bs-target="#offcanvasTopFull" aria-controls="offcanvasTopFull">
+                    <i class="fas fa-tasks me-1"></i> Tarea
+                </button>
+                 <button class="btn btn-outline-dark btn-sm" data-bs-toggle="offcanvas" data-bs-target="#offcanvasTopFullTaller" aria-controls="offcanvasTopFull">
+                    <i class="fas fa-tasks me-1"></i> Taller
+                </button>
+                <button class="btn btn-outline-success btn-sm" (click)="abrirModalforos()">
+                    <i class="fa-solid fa-comments"></i> Foro
+                </button>
+            </div>
+        </div>
+
+        </div>
+
+        
+        <div cdkDropList cdkDropListOrientation="vertical" (cdkDropListDropped)="usuario?.id_rol == 3 ? moverContenido($event) : null"   
+            class="contenedor-drag">
+
+            <!-----------------mostramos los archivos subidos por el usuario--------------------->
+
+        <div class="carpeta-archivos" *ngIf="archivosAgrupados.length > 0">
+            <!-- Cabecera con contador y flecha -->
+            <div class="cabecera-carpeta" (click)="mostrarArchivos = !mostrarArchivos">
+                <i class="fa-solid fa-folder icono-carpeta" [ngClass]="{ 'abierta': mostrarArchivos }"></i>
+                <span class="titulo-carpeta">Archivos adjuntos ({{ archivosAgrupados.length }})</span>
+                <i class="fa-solid ms-auto text-white" [ngClass]="mostrarArchivos ? 'fa-chevron-up' : 'fa-chevron-down'"></i>
+            </div>
+        
+            <!-- Lista visible al expandir -->
+            <div class="lista-archivos" *ngIf="mostrarArchivos">
+                <div *ngFor="let archivo of archivosAgrupados" class="archivo-item">
+                    <i [ngClass]="getIconoArchivo(archivo.url_archivo)" class="icono-archivo me-2"></i>
+                    <span class="nombre-archivos me-2">{{ archivo.url_archivo }}</span>
+                    <a [href]="CargarImagenes(7, archivo.url_archivo)" target="_blank"
+                        class="btn btn-download-archivo btn-sm me-2">
+                        <i class="fa-solid fa-download"></i>
+                    </a>
+                    <div *ngIf="usuario?.id_rol == 3 ">
+                        <button class="btn btn-outline-danger btn-sm" (click)="EliminarArchivosTemasEducativos(archivo)">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div *ngFor="let contenido of contenidoTemaSeleccionado; let i = index"   cdkDrag [ngClass]="{
+            'contenido-texto': contenido.tipo_contenido === 'texto',
+                'contenido-imagen': contenido.tipo_contenido === 'imagen',
+                'contenido-archivo': contenido.tipo_contenido === 'archivo',
+                'contenido-tarea': contenido.tipo_contenido === 'tarea'
+                }" class="contenido-card">
+                <div class="card-body contenido-body">
+
+                    <!-- 🔵 TIPO TEXTO -->
+
+                    <ng-container *ngIf="contenido.tipo_contenido === 'texto'">
+                        <div class="contenedor-texto mt-1">
+                            <div *ngIf="usuario?.id_rol == 3 ">
+                                <i class="fas fa-arrows-alt drag-icon" cdkDragHandle title="Arrastrar contenido"></i>
+                            </div>
+                            <h5 class="titulo-texto">{{ contenido.titulo || 'Sin título' }}</h5>
+                            <div class="contenido-texto" [innerHTML]="decodeHTML(contenido.contenido_texto)"></div>
+                            <div *ngIf="usuario?.id_rol == 3 ">
+                                <div class="row acciones-botones text-center mt-3 gx-3 gy-2">
+                                    <div class="col-12 col-sm-6 ">
+                                        <button class="btn btn-outline-secondary w-100 py-2 fw-semibold" (click)="abrirModalEditarTexto(contenido)">
+                                            <i class="fas fa-edit me-1"></i> Editar
+                                        </button>
+                                    </div>
+                            
+                                    <div class="col-12 col-sm-6 ">
+                                        <button class="btn btn-outline-danger w-100 py-2 fw-semibold" (click)="eliminarTexto(contenido)">
+                                            <i class="fas fa-trash-alt me-1"></i> Eliminar
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </ng-container>
+
+
+                      <!-- 🔵 TIPO FORO -->
+                        <ng-container *ngIf="contenido.tipo_contenido === 'foro'">
+                        <div class="contenedor-texto mt-1">
+                            <div *ngIf="usuario?.id_rol == 3 ">
+                                <i class="fas fa-arrows-alt drag-icon float-end" cdkDragHandle title="Arrastrar contenido"></i>
+                            </div>
+                            <div class="d-flex align-items-start p-3   mt-2 tarea-card">
+                                <div class="me-3">
+                                    <img [src]="CargarImagenes(1, 'charla.png')" class="img-tarea rounded" alt="{{contenido.titulo}}" />
+                                </div>
+                                <div class="flex-grow-1">
+                                    <h5 class="fw-bold mb-1 text-info">{{ contenido.titulo || 'Tarea sin título' }}</h5>
+                                    <p class="mb-2 text-muted">Foro pendiente para los estudiantes.</p>
+                                    <span class="badge bg-info text-dark">Foro</span> &nbsp;
+                                    <span class="badge bg-entrar-foro text-dark" (click)="AbrirAffcaRevisarForos(contenido)" data-bs-toggle="offcanvas"
+                                        data-bs-target="#offcanvasBottomRevisarForo">
+                                        {{ usuario?.id_rol == 3 ? 'Revisar el foro' : 'Entrar al foro' }}
+                                    </span>
+
+                                </div>
+                            </div>
+                            <div *ngIf="usuario?.id_rol == 3 ">
+                                <div class="row acciones-botones text-center mt-3 gx-3 gy-2">
+                                    <div class="col-12 col-sm-6 ">
+                                        <button class="btn btn-outline-secondary w-100 py-2 fw-semibold" (click)="abrirModalEditarTexto(contenido)">
+                                            <i class="fas fa-edit me-1"></i> Editar
+                                        </button>
+                                    </div>
+                            
+                                    <div class="col-12 col-sm-6 ">
+                                        <button class="btn btn-outline-danger w-100 py-2 fw-semibold" (click)="eliminarTexto(contenido)">
+                                            <i class="fas fa-trash-alt me-1"></i> Eliminar
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </ng-container>
+
+                
+                    <!-- 🟢 TIPO IMAGEN -->
+
+                    <ng-container *ngIf="contenido.tipo_contenido === 'imagen'">
+                        <div class="contenedor-imagen mt-1">
+                            <div *ngIf="usuario?.id_rol == 3 ">
+                                <i class="fas fa-arrows-alt drag-icon" cdkDragHandle title="Arrastrar contenido"></i>
+                            </div>
+                            <!-- Imagen por URL externa -->
+                            <a *ngIf="contenido.url_archivo" [href]="contenido.url_archivo" data-lightbox="contenido"
+                                [attr.data-title]="contenido.titulo || 'Imagen externa'">
+                                <img [src]="contenido.url_archivo" alt="Imagen desde URL" class="img-fluid rounded shadow-sm " />
+                            </a>
+                    
+                            <!-- Imagen local subida por el usuario -->
+                             
+                            <a *ngIf="!contenido.url_archivo && contenido.descripcion" [href]="CargarImagenes(6, contenido.descripcion)"
+                                data-lightbox="contenido" [attr.data-title]="contenido.titulo || 'Imagen local'">
+                                <img [src]="CargarImagenes(6, contenido.descripcion)" alt="Imagen desde servidor"
+                                    class="img-fluid rounded shadow-sm " />
+                            </a>
+                            <div class="row acciones-botones text-center mt-3 gx-3 gy-2">
+                                <div *ngIf="usuario?.id_rol == 3 ">
+                                    <div class="col-12 col-sm-12 ">
+                                        <button class="btn btn-outline-danger w-100 py-2 fw-semibold" (click)="eliminarImagenes(contenido)">
+                                            <i class="fas fa-trash-alt me-1"></i> Eliminar
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                        </div>
+
+                    </ng-container>
+
+                    <!-- 🟣 TIPO VIDEO -->
+
+                    <ng-container *ngIf="contenido.tipo_contenido === 'video'">
+                        <div class="contenedor-imagen mt-1">
+                            <div *ngIf="usuario?.id_rol == 3 ">
+                                <i class="fas fa-arrows-alt drag-icon" cdkDragHandle title="Arrastrar contenido"></i>
+                            </div>
+                            <iframe width="100%" height="415" [src]="getYoutubeEmbedUrl(contenido.url_archivo)" frameborder="0"
+                                allowfullscreen></iframe>
+                            <div class="row acciones-botones text-center mt-3 gx-3 gy-2">
+                                <div *ngIf="usuario?.id_rol == 3 ">
+                                    <div class="col-12 col-sm-12 ">
+                                        <button class="btn btn-outline-danger w-100 py-2 fw-semibold" (click)="eliminarVideos(contenido)">
+                                            <i class="fas fa-trash-alt me-1"></i> Eliminar
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </ng-container>
+
+                    <!-- 🟡 TIPO TAREA -->
+                    <ng-container *ngIf="contenido.tipo_contenido === 'tarea'">
+                        <div class="contenedor-texto mt-1">
+                            <div *ngIf="usuario?.id_rol == 3 ">
+                                <i class="fas fa-arrows-alt drag-icon float-end" cdkDragHandle title="Arrastrar contenido"></i>
+                            </div>
+                            <div class="d-flex align-items-start p-3   mt-2 tarea-card">
+                                <div class="me-3">
+                                    <img [src]="CargarImagenes(1, 'tareas.png')" class="img-tarea rounded" alt="{{contenido.titulo}}" />
+                                </div>
+                                <div class="flex-grow-1">
+                                    <h5 class="fw-bold mb-1 text-warning">{{ contenido.titulo || 'Tarea sin título' }}</h5>
+                                    <p class="mb-2 text-muted">Tarea pendiente para los estudiantes.</p>
+                                    <span class="badge bg-warning text-dark">Tarea</span>&nbsp;
+                                    <span class="badge bg-entrar-foro text-dark" (click)="AbrirAffcaRevisarTareas(contenido)" data-bs-toggle="offcanvas"
+                                        data-bs-target="#offcanvasBottomRevisarTareas">
+                                        {{ usuario?.id_rol == 3 ? 'Revisar tarea' : 'Entregar tarea' }}
+                                    </span>
+                                </div>
+                            </div>
+                            <div *ngIf="usuario?.id_rol == 3 ">
+                                <div class="row acciones-botones text-center mt-3 gx-3 gy-2">
+                                    <div class="col-12 col-sm-6 ">
+                                        <button class="btn btn-outline-secondary w-100 py-2 fw-semibold" (click)="editarTarea(contenido)">
+                                            <i class="fas fa-edit me-1"></i> Editar
+                                        </button>
+                                    </div>
+                            
+                                    <div class="col-12 col-sm-6 ">
+                                        <button class="btn btn-outline-danger w-100 py-2 fw-semibold" (click)="eliminarTareasEducativas(contenido)">
+                                            <i class="fas fa-trash-alt me-1"></i> Eliminar
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </ng-container>
+
+                     <!-- 🟢 TIPO TALLER -->
+                    <ng-container *ngIf="contenido.tipo_contenido === 'taller'">
+                        <div class="contenedor-texto mt-1">
+                            <div *ngIf="usuario?.id_rol == 3 ">
+                                <i class="fas fa-arrows-alt drag-icon float-end" cdkDragHandle title="Arrastrar contenido"></i>
+                            </div>
+                            <div class="d-flex align-items-start p-3   mt-2 tarea-card">
+                                <div class="me-3">
+                                    <img [src]="CargarImagenes(1, 'taller.png')" class="img-tarea rounded" alt="{{contenido.titulo}}" />
+                                </div>
+                                <div class="flex-grow-1">
+                                    <h5 class="fw-bold mb-1 text-info">{{ contenido.titulo || 'Tarea sin título' }}</h5>
+                                    <p class="mb-2 text-muted">Taller pendiente para los estudiantes.</p>
+                                    <span class="badge bg-info text-dark">Taller</span>
+                                </div>
+                            </div>
+                            <div *ngIf="usuario?.id_rol == 3 ">
+                                <div class="row acciones-botones text-center mt-3 gx-3 gy-2">
+                                    <div class="col-12 col-sm-6 ">
+                                        <button class="btn btn-outline-secondary w-100 py-2 fw-semibold" (click)="editarTaller(contenido)">
+                                            <i class="fas fa-edit me-1"></i> Editar
+                                        </button>
+                                    </div>
+                            
+                                    <div class="col-12 col-sm-6 ">
+                                        <button class="btn btn-outline-danger w-100 py-2 fw-semibold" (click)="eliminarTallerEducativos(contenido)">
+                                            <i class="fas fa-trash-alt me-1"></i> Eliminar
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </ng-container>
+
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <div *ngIf="temasEducativos.length === 0">
+        <app-error-message [mensaje]="' No hay temas registradas para esta materia.'" [imagen]="'error-busqueda.png'">
+        </app-error-message>
+    </div>
+</div>
+
+
+
+
+<!-- Modal  registrar temas academicos-->
+<div class="modal fade" id="modalAgregarTema" tabindex="-1" aria-labelledby="tituloModalTema" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-xl">
+        <div class="modal-content rounded-4 shadow-lg">
+            <div class="modal-header bg-primary text-white rounded-top-4">
+                <h5 class="modal-title" id="tituloModalTema">Agregar nuevo tema: {{titulo}}</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                    aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body p-4">
+                <form>
+                    <!-- Título -->
+                    <div class="mb-3">
+                        <label for="tituloTema" class="form-label"><b>Título del Tema</b></label>
+                        <app-inputs label="Título del Tema " type="text" name="tituloTema"
+                            [(ngModel)]="nuevoTema.titulo_tema" [required]="true">
+                        </app-inputs>
+                    </div>
+
+                    <!-- Descripción -->
+                    <div class="mb-3">
+                        <label for="descripcionTema" class="form-label"><b>Descripción</b></label>
+                        <app-editor-text [(contenido)]="nuevoTema.descripcion"
+                            placeholder="Breve descripción del tema, materiales, ideas clave...">
+                        </app-editor-text>
+                    </div>
+
+                    <div class="text-center mt-2">
+                        <app-button-submit (click)="guardarTema()" [text]="'Registrar Tema'"></app-button-submit>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="modalActualizarImagenPortada" tabindex="-1" aria-labelledby="tituloModalTema" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-xl">
+        <div class="modal-content rounded-4 shadow-lg">
+            <div class="modal-header bg-primary text-white rounded-top-4">
+                <h5 class="modal-title" id="tituloModalTema">Actualizar imagen portada materia</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                    aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body p-4">
+
+                <div *ngIf="temasEducativos.length > 0; else sinTemasRregistrados">
+
+                    
+                <div class="col-md-12 d-flex flex-column justify-content-center align-items-center p-4 contenedor-avatar-user">
+                    <label class="position-relative avatar-uploader" for="inputAvatar">
+                        <img *ngIf="imagenPortadaMateria" [src]="CargarImagenes(8, imagenPortadaMateria)"
+                            class="img-fluid rounded shadow" alt="Portada de la materia">
+                        <!-- Ícono flotante de edición -->
+                        <div class="avatar-overlay d-flex justify-content-center align-items-center">
+                            <i class="fa-solid fa-pen fa-lg text-white"></i>
+                        </div>
+            
+                        <!-- Input oculto -->
+                        <input id="inputAvatar" type="file" accept="image/*" hidden (change)="actualizarAvatar($event)">
+                    </label>
+            
+                </div>
+
+                </div>
+
+                <ng-template #sinTemasRregistrados>
+                    <app-error-message [mensaje]="'Antes de editar la imagen de portada, asegúrese de haber registrado algún tema educativo.'" [imagen]="'error-busqueda.png'">
+                    </app-error-message>
+                </ng-template>
+
+            </div>
+            
+        </div>
+    </div>
+</div>
+
+
+
+<!-- Modal para agregar texto -->
+<div class="modal fade" id="modalAgregarTexto" tabindex="-1" aria-labelledby="modalAgregarTextoLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
+        <div class="modal-content shadow">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="modalAgregarTextoLabel">Agregar contenido de texto</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                    aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body">
+                <form (ngSubmit)="guardarTexto()" #formTexto="ngForm">
+                    <!-- Título -->
+                    <div class="mb-3">
+                        <label for="tituloTema" class="form-label">Título del Tema</label>
+                        <app-inputs label="Ej: Introducción a la Cartografía" type="text" name="tituloTema"
+                            [(ngModel)]="nuevoTexto.titulo" [required]="true">
+                        </app-inputs>
+                    </div>
+                    <div class="mb-3">
+                        <label for="contenidoTexto" class="form-label">Contenido</label>
+                        <app-editor-text [(contenido)]="nuevoTexto.contenido"
+                            placeholder="Escribe aquí el contenido detallado del texto...">
+                        </app-editor-text>
+                    </div>
+
+                    <div class="text-center mt-2">
+                        <app-button-submit [text]="'guardar texto '"></app-button-submit>
+                    </div>
+
+                    <div class="text-end">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                            Cancelar
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal para editar contenido de texto -->
+<div class="modal fade" id="modalEditarTexto" tabindex="-1" aria-labelledby="modalEditarTextoLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="modalEditarTextoLabel">Editar Contenido de Texto o Foro</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="mb-3">
+                        <label for="tituloContenido" class="form-label">Título</label>
+                        <input type="text" class="form-control" id="tituloContenido"
+                            [(ngModel)]="contenidoEditando.titulo" name="tituloContenido">
+                    </div>
+                    <div class="mb-3">
+                        <label for="textoContenido" class="form-label">Contenido</label>
+                        <app-editor-text [(contenido)]="contenidoEditando.contenido_texto"
+                            placeholder="Escribe aquí el contenido detallado del texto...">
+                        </app-editor-text>
+                        
+                    </div>
+
+                    <div class="text-center mt-2">
+                    <app-button-submit (click)="ActualizarInformacionTextos()" [text]="'editar  '"></app-button-submit>
+                </div>
+
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal para agregar imagenes -->
+<div class="modal fade" id="modalAgregarImagen" tabindex="-1" aria-labelledby="modalAgregarTextoLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
+        <div class="modal-content shadow">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="modalAgregarTextoLabel">Agregar imagen</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                    aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body">
+
+                <!-- Previsualización -->
+                <div *ngIf="imagenPrevisualizada" class="preview-container mt-3 mb-4">
+                    <img [src]="imagenPrevisualizada" class="img-fluid rounded shadow"
+                        alt="Previsualización de imagen" />
+                </div>
+
+                <div class="upload-container" (drop)="onDrop($event)" (dragover)="onDragOver($event)">
+                    <label class="upload-label">
+                        <input type="file" hidden (change)="onFileSelected($event)" accept="image/*" />
+                        <div class="upload-icon">
+                            <i class="fas fa-cloud-upload-alt fa-3x text-purple"></i>
+                            <p class="text-purple fw-bold mt-2">Arrastra tus imágenes aquí o haz clic para
+                                seleccionarlas</p>
+                        </div>
+                    </label>
+                </div>
+
+
+                <!-- Campo opcional para pegar URL de imagen -->
+                <div class="form-group mt-3">
+                    <label class="form-label">O pega la URL de la imagen:</label>
+                    <app-inputs label="https://ejemplo.com/imagen.jpg" type="text" [(ngModel)]="imagenDesdeUrl"
+                        (input)="previsualizarDesdeUrl()" [required]="true">
+                    </app-inputs>
+                </div>
+
+                <div class="text-center mt-2">
+                    <app-button-submit (click)="guardarImagen()" [text]="'guardar imagen '"></app-button-submit>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal para agregar archivos -->
+<div class="modal fade" id="modalAgregararchivos" tabindex="-1" aria-labelledby="modalAgregarTextoLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
+        <div class="modal-content shadow">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="modalAgregarTextoLabel">Agregar archivos</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                    aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body">
+
+                <div class="dropzone" (drop)="onDropArchivo($event)" (dragover)="onDragOverArchivo($event)"
+                    (dragleave)="onDragOverArchivo($event)">
+                    <input type="file" multiple (change)="onFileSelectedArchivo($event)" hidden #fileInputArchivo>
+                    <div class="dropzone-content" (click)="fileInputArchivo.click()">
+                        <i class="fas fa-cloud-upload-alt icon"></i>
+                        <p>Arrastra tus archivos aquí o haz clic para seleccionarlos</p>
+                    </div>
+                </div>
+                
+                <div class="preview-container text-center">
+                    <div class="preview-card" *ngFor="let archivo of archivosEducativos; let i = index">
+                
+                        <!-- Icono o miniatura centrado -->
+                        <div class="preview-media">
+                            <img *ngIf="esImagenArchivo(archivo)" [src]="archivo.preview" alt="Previsualización" />
+                            <i *ngIf="!esImagenArchivo(archivo)" [ngClass]="obtenerIconoArchivo(archivo.name)"
+                                class="archivo-icono"></i>
+                        </div>
+                
+                        <!-- Nombre del archivo debajo del icono/imagen -->
+                        <div class="archivo-nombre">{{ archivo.name }}</div>
+                
+                        <!-- Botón eliminar en la esquina superior derecha -->
+                        <button class="btn-eliminar" (click)="eliminarArchivoEducativo(i)"> <i class="fas fa-trash-alt me-1"></i></button>
+                    </div>
+                </div>
+
+
+                <div class="text-center mt-2">
+                    <app-button-submit (click)="enviarArchivos()" [text]="'guardar archivos '"></app-button-submit>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalAgregarVideos" tabindex="-1" aria-labelledby="modalAgregarTextoLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
+        <div class="modal-content shadow">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="modalAgregarTextoLabel">Agregar videos</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                    aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body">
+
+                <app-inputs label="Pega el enlace de YouTube aquí" type="text" [(ngModel)]="videoUrl" [required]="true">
+                </app-inputs>
+                
+                <div *ngIf="videoUrl" class="mt-3">
+                    <iframe width="100%" height="415" [src]="getYoutubeEmbedUrl(videoUrl)" frameborder="0" allowfullscreen></iframe>
+                </div>
+
+                <div class="text-center mt-2">
+                    <app-button-submit (click)="guardarVideos()" [text]="'guardar video '"></app-button-submit>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--modal para agregar un foro-->
+<div class="modal fade" id="modalAgregarforo" tabindex="-1" aria-labelledby="modalAgregarTextoLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
+        <div class="modal-content shadow">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="modalAgregarTextoLabel">Tema de discusión</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                    aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body">
+                <form (ngSubmit)="guardarForo()" #formTexto="ngForm">
+                    <!-- Título -->
+                    <div class="mb-3">
+                        <label for="tituloTema" class="form-label"><b>Título del foro</b></label>
+                        <app-inputs label="Ej: Introducción a la Cartografía" type="text" name="tituloTema"
+                            [(ngModel)]="nuevoTexto.titulo" [required]="true">
+                        </app-inputs>
+                    </div>
+                    <div class="mb-1">
+                        <label for="contenidoTexto" class="form-label"><b>Contenido</b></label>
+                        <app-editor-text  [(contenido)]="nuevoTexto.contenido" placeholder="Escribe la descripción del foro aquí...">
+                        </app-editor-text>
+                    </div>
+
+                    <div class="text-center mt-2">
+                        <app-button-submit [text]="'guardar foro '"></app-button-submit>
+                    </div>
+
+                    <div class="text-end">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                            Cancelar
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Offcanvas Top de pantalla completa horizontalmente agregar tareas -->
+<div class="offcanvas offcanvas-top offcanvas-top-full custom-offcanvas-transition" tabindex="-1" id="offcanvasTopFull"
+    aria-labelledby="offcanvasTopFullLabel">
+    <div class="offcanvas-header  text-white">
+        <h5 id="offcanvasTopFullLabel">Agregar tareas</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body">
+
+        <form (ngSubmit)="guardarTareas()" #formTarea="ngForm">
+            <div class="mb-3">
+                <label for="tituloTema" class="form-label"><b>Título de la Tarea</b></label>
+                <app-inputs label="Ej: Introducción a la Cartografía" type="text" name="tituloTarea" [(ngModel)]="nuevaTarea.titulo"
+                    [required]="true">
+                </app-inputs>
+            </div>
+            <div class="mb-3">
+                <label for="contenidoTexto" class="form-label"><b>Contenido</b></label>
+                <app-editor-text  [(contenido)]="nuevaTarea.contenido" placeholder="Escribe aquí el contenido detallado de la tarea...">
+                </app-editor-text>
+               
+            </div>
+
+            <div class="row g-4 mb-4 fecha-tarea-wrapper">
+                <div class="col-md-6">
+                    <div class="campo-fecha bg-light rounded p-3 shadow-sm h-100">
+                        <label class="form-label fw-bold text-primary"><i class="fas fa-calendar-alt me-1"></i> Fecha de
+                            inicio</label>
+                        <input type="datetime-local" class="form-control fecha-input" name="fecha_inicio" [(ngModel)]="nuevaTarea.fecha_inicio" />
+                    </div>
+                </div>
+            
+                <div class="col-md-6">
+                    <div class="campo-fecha bg-light rounded p-3 shadow-sm h-100">
+                        <label class="form-label fw-bold text-success"><i class="fas fa-calendar-check me-1"></i> Fecha de
+                            entrega</label>
+                        <input type="datetime-local" class="form-control fecha-input" name="fecha_entrega" [(ngModel)]="nuevaTarea.fecha_entrega" />
+                    </div>
+                </div>
+            
+                <div class="col-md-6">
+                    <div class="campo-fecha bg-light rounded p-3 shadow-sm h-100">
+                        <label class="form-label fw-bold text-warning"><i class="fas fa-clock me-1"></i> Fecha límite de
+                            entrega</label>
+                        <input type="datetime-local" class="form-control fecha-input" name="fecha_limite_entrega"
+                            [(ngModel)]="nuevaTarea.fecha_limite_entrega" />
+                    </div>
+                </div>
+            
+                <div class="col-md-6">
+                    <div class="campo-fecha bg-light rounded p-3 shadow-sm h-100">
+                        <label class="form-label fw-bold text-danger"><i class="fas fa-bell me-1"></i> Recordarme calificar</label>
+                        <input type="datetime-local" class="form-control fecha-input" name="recordarme_calificar"
+                            [(ngModel)]="nuevaTarea.recordarme_calificar" />
+                    </div>
+                </div>
+
+            </div>
+
+        <div class="col-md-12 mb-5">
+            <label class="form-label fw-bold mx-2">Tipo de entrega</label>
+        
+            <div class="row g-3">
+                <div class="col-12 col-sm-6 col-lg-6" *ngFor="let tipo of tiposEntrega">
+                    <button type="button"
+                        class="btn btn-block text-start p-3 w-100 shadow-sm rounded border transition-custom fw-semibold"
+                        [ngClass]="{
+                    'bg-active-archivo text-white': entregaSeleccionada === tipo.valor,
+                    'btn-outline-secondary': entregaSeleccionada !== tipo.valor
+                  }" (click)="seleccionarEntrega(tipo.valor)">
+                        <i class="me-2" [ngClass]="tipo.icono"></i> {{ tipo.nombre }}
+                    </button>
+        
+                </div>
+            </div>
+        </div>
+
+
+
+        
+        <!-- Solo si se selecciona "Archivo" -->
+        <div class="container-fluid mt-3 mb-3">
+            <div class="col-md-12" *ngIf="entregaSeleccionada === 'archivo'">
+                <label class="form-label fw-bold">Selecciona el tipo de archivo permitido</label>
+                <div class="row">
+                    <div class="col-sm-6 col-md-4 mb-2" *ngFor="let archivo of tiposArchivosPermitidos">
+                        <div
+                            class="form-check border rounded p-2 shadow-sm bg-light d-flex align-items-center transition-custom">
+                            <input class="form-check-input mx-2" type="radio" name="tipoArchivoPermitido"
+                                [value]="archivo.extension" [(ngModel)]="tipoArchivoSeleccionado" required />
+                            <i class="fa-solid {{ archivo.icono }} me-2 fs-3" [style.color]="archivo.colorIcono"></i>
+                            <label class="form-check-label">
+                                {{ archivo.tipo }}
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-12 mb-3">
+        <label class="form-label fw-bold mx-2">¿Es una actividad grupal?</label>
+
+        <div class="row g-3">
+            <div class="col-12 col-sm-6">
+                <button type="button"
+                    class="btn btn-block w-100 p-3 shadow-sm rounded border transition-custom fw-semibold text-start" [ngClass]="{
+                        'bg-active-archivo text-white': esGrupal === 1,
+                        'btn-outline-secondary': esGrupal !== 1
+                    }" (click)="esGrupal = 1">
+                    <i class="fa-solid fa-users"></i> &nbsp; Grupal
+                </button>
+            </div>
+
+            <div class="col-12 col-sm-6">
+                <button type="button"
+                    class="btn btn-block w-100 p-3 shadow-sm rounded border transition-custom fw-semibold text-start" [ngClass]="{
+                        'bg-active-archivo text-white': esGrupal === 0,
+                        'btn-outline-secondary': esGrupal !== 0
+                    }" (click)="esGrupal = 0">
+                 <i class="fa-solid fa-user"></i> &nbsp; Individual
+                </button>
+            </div>
+        </div>
+        </div>
+
+
+
+            <label for="contenidoTexto" class="form-label mt-2"><b>Archivo abjuntos</b></label>
+            <div class="dropzone" (drop)="onDropArchivo($event)" (dragover)="onDragOverArchivo($event)"
+                (dragleave)="onDragOverArchivo($event)">
+                <input type="file" multiple (change)="onFileSelectedArchivo($event)" hidden #fileInputArchivo>
+                <div class="dropzone-content" (click)="fileInputArchivo.click()">
+                    <i class="fas fa-cloud-upload-alt icon"></i>
+                    <p>Arrastra tus archivos aquí o haz clic para seleccionarlos</p>
+                </div>
+            </div>
+
+            <div class="preview-container text-center">
+                <div class="preview-card" *ngFor="let archivo of archivosEducativos; let i = index">
+
+                    <!-- Icono o miniatura centrado -->
+                    <div class="preview-media">
+                        <img *ngIf="esImagenArchivo(archivo)" [src]="archivo.preview" alt="Previsualización" />
+                        <i *ngIf="!esImagenArchivo(archivo)" [ngClass]="obtenerIconoArchivo(archivo.name)"
+                            class="archivo-icono"></i>
+                    </div>
+
+                    <!-- Nombre del archivo debajo del icono/imagen -->
+                    <div class="archivo-nombre">{{ archivo.name }}</div>
+
+                    <!-- Botón eliminar en la esquina superior derecha -->
+                    <button type="button" class="btn-eliminar" (click)="eliminarArchivoEducativo(i)"> <i
+                            class="fas fa-trash-alt me-1"></i></button>
+                </div>
+            </div>
+
+             <div class="text-center mt-2">
+                    <app-button-submit  [text]="'Agregar tarea '"></app-button-submit>
+                </div>
+
+        </form> 
+
+    </div>
+</div>
+
+<div class="offcanvas offcanvas-bottom offcanvas-top-full  custom-offcanvas-transition" tabindex="-1" id="offcanvasBottomeditarTareas" aria-labelledby="offcanvasBottomLabel">
+  <div class="offcanvas-header text-white">
+    <h5 class="offcanvas-title" id="offcanvasBottomLabel">Editar tarea: {{ contenidoEditandoTareas?.titulo_tarea }}</h5>
+    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Cerrar"></button>
+  </div>
+  <div class="offcanvas-body small">
+     <form (ngSubmit)="EditarTareaRegistrada(contenidoEditandoTareas.id_contenido,contenidoEditandoTareas.id_tarea)" #formTarea="ngForm">
+        <div class="mb-3">
+            <label for="tituloTema" class="form-label"><b>Título de la Tarea</b></label>
+            <app-inputs label="Ej: Introducción a la Cartografía" type="text" name="tituloTarea"
+                [(ngModel)]="contenidoEditandoTareas.titulo_tarea" [required]="true">
+            </app-inputs>
+        </div>
+        <div class="mb-3">
+            <label for="contenidoTexto" class="form-label"><b>Contenido</b></label>
+             <app-editor-text  [(contenido)]="contenidoEditandoTareas.descripcion" placeholder="Escribe aquí el contenido detallado de la tarea...">
+                </app-editor-text>
+        </div>
+        <div class="row g-4 mb-4 fecha-tarea-wrapper">
+                <div class="col-md-6">
+                    <div class="campo-fecha bg-light rounded p-3 shadow-sm h-100">
+                        <label class="form-label fw-bold text-primary"><i class="fas fa-calendar-alt me-1"></i> Fecha de
+                            inicio</label>
+                        <input type="datetime-local" class="form-control fecha-input" name="fecha_inicio" [(ngModel)]="contenidoEditandoTareas.fecha_inicio" />
+                    </div>
+                </div>
+            
+                <div class="col-md-6">
+                    <div class="campo-fecha bg-light rounded p-3 shadow-sm h-100">
+                        <label class="form-label fw-bold text-success"><i class="fas fa-calendar-check me-1"></i> Fecha de
+                            entrega</label>
+                        <input type="datetime-local" class="form-control fecha-input" name="fecha_entrega" [(ngModel)]="contenidoEditandoTareas.fecha_entrega" />
+                    </div>
+                </div>
+            
+                <div class="col-md-6">
+                    <div class="campo-fecha bg-light rounded p-3 shadow-sm h-100">
+                        <label class="form-label fw-bold text-warning"><i class="fas fa-clock me-1"></i> Fecha límite de
+                            entrega</label>
+                        <input type="datetime-local" class="form-control fecha-input" name="fecha_limite_entrega"
+                            [(ngModel)]="contenidoEditandoTareas.fecha_limite_entrega" />
+                    </div>
+                </div>
+            
+                <div class="col-md-6">
+                    <div class="campo-fecha bg-light rounded p-3 shadow-sm h-100">
+                        <label class="form-label fw-bold text-danger"><i class="fas fa-bell me-1"></i> Recordarme calificar</label>
+                        <input type="datetime-local" class="form-control fecha-input" name="recordarme_calificar"
+                            [(ngModel)]="contenidoEditandoTareas.recordarme_calificar" />
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="col-md-12 mb-5">
+                <label class="form-label fw-bold mx-2">Tipo de entrega</label>
+            
+                <div class="row g-3">
+                    <div class="col-12 col-sm-6 col-lg-6" *ngFor="let tipo of tiposEntrega">
+                        <button type="button"
+                            class="btn btn-block text-start p-3 w-100 shadow-sm rounded border transition-custom fw-semibold"
+                            [ngClass]="{
+                                'bg-active-archivo text-white': entregaSeleccionada === tipo.valor,
+                                'btn-outline-secondary': entregaSeleccionada !== tipo.valor
+                              }" (click)="seleccionarEntrega(tipo.valor)">
+                            <i class="me-2" [ngClass]="tipo.icono"></i> {{ tipo.nombre }}
+                        </button>
+            
+                    </div>
+                </div>
+            </div>
+
+
+            <!--archivos adjuntos tareas-->
+             <div class="lista-archivos" *ngIf="listaArchivos?.length > 0" >
+                <h5 class="mb-3">Archivos Adjuntos:</h5>
+                <div *ngFor="let archivo of listaArchivos; let i = index" class="archivo-item">
+                    <i [ngClass]="getIconoArchivo(archivo)" class="icono-archivo me-2"></i>
+                    <span class="nombre-archivos me-2">{{archivo }}</span>
+                    <a [href]="CargarImagenes(7, archivo)" target="_blank"
+                        class="btn btn-download-archivo btn-sm me-2">
+                        <i class="fa-solid fa-download"></i>
+                    </a>
+                    <button type="button" class="btn btn-outline-danger btn-sm"
+                        (click)="EliminarArchivoTareaRegistrada(archivo,contenidoEditandoTareas.id_tarea,contenidoEditandoTareas.titulo_tarea,contenidoEditandoTareas.id_contenido)">
+                        <i class="fa-solid fa-trash"></i>
+                    </button>
+                </div>
+            </div>
+
+           
+
+             <!-- Solo si se selecciona "Archivo" -->
+            <div class="container-fluid mt-3 mb-3">
+                <div class="col-md-12" *ngIf="entregaSeleccionada === 'archivo'">
+                    <label class="form-label fw-bold">Selecciona el tipo de archivo permitido</label>
+                    <div class="row">
+                        <div class="col-sm-6 col-md-6 mb-2" *ngFor="let archivo of tiposArchivosPermitidos">
+                            <div
+                                class="form-check border rounded p-2 shadow-sm bg-light d-flex align-items-center transition-custom">
+                                <input class="form-check-input mx-2" type="radio" name="tipoArchivoPermitido"
+                                    [value]="archivo.extension" [(ngModel)]="tipoArchivoSeleccionado" required />
+                                <i class="fa-solid {{ archivo.icono }} me-2 fs-3" [style.color]="archivo.colorIcono"></i>
+                                <label class="form-check-label">
+                                    {{ archivo.tipo }}
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-12 mb-3">
+                <label class="form-label fw-bold mx-2">¿Es una actividad grupal?</label>
+            
+                <div class="row g-3">
+                    <div class="col-12 col-sm-6">
+                        <button type="button"
+                            class="btn btn-block w-100 p-3 shadow-sm rounded border transition-custom fw-semibold text-start"
+                            [ngClass]="{
+                                    'bg-active-archivo text-white': esGrupal === 1,
+                                    'btn-outline-secondary': esGrupal !== 1
+                                }" (click)="esGrupal = 1">
+                            <i class="fa-solid fa-users"></i> &nbsp; Grupal
+                        </button>
+                    </div>
+            
+                    <div class="col-12 col-sm-6">
+                        <button type="button"
+                            class="btn btn-block w-100 p-3 shadow-sm rounded border transition-custom fw-semibold text-start"
+                            [ngClass]="{
+                                    'bg-active-archivo text-white': esGrupal === 0,
+                                    'btn-outline-secondary': esGrupal !== 0
+                                }" (click)="esGrupal = 0">
+                            <i class="fa-solid fa-user"></i> &nbsp; Individual
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+
+            <label for="contenidoTexto" class="form-label mt-2"><b>Archivo abjuntos</b></label>
+            <div class="dropzone" (drop)="onDropArchivo($event)" (dragover)="onDragOverArchivo($event)"
+                (dragleave)="onDragOverArchivo($event)">
+                <input type="file" multiple (change)="onFileSelectedArchivo($event)" hidden #fileInputArchivo>
+                <div class="dropzone-content" (click)="fileInputArchivo.click()">
+                    <i class="fas fa-cloud-upload-alt icon"></i>
+                    <p>Arrastra tus archivos aquí o haz clic para seleccionarlos</p>
+                </div>
+            </div>
+            
+            <div class="preview-container text-center">
+                <div class="preview-card" *ngFor="let archivo of archivosEducativos; let i = index">
+            
+                    <!-- Icono o miniatura centrado -->
+                    <div class="preview-media">
+                        <img *ngIf="esImagenArchivo(archivo)" [src]="archivo.preview" alt="Previsualización" />
+                        <i *ngIf="!esImagenArchivo(archivo)" [ngClass]="obtenerIconoArchivo(archivo.name)"
+                            class="archivo-icono"></i>
+                    </div>
+                    <!-- Nombre del archivo debajo del icono/imagen -->
+                    <div class="archivo-nombre">{{ archivo.name }}</div>
+            
+                    <!-- Botón eliminar en la esquina superior derecha -->
+                    <button type="button" class="btn-eliminar" (click)="eliminarArchivoEducativo(i)"> <i
+                            class="fas fa-trash-alt me-1"></i></button>
+                </div>
+            </div>
+            
+            <div class="text-center mt-2">
+                <app-button-submit [text]="'Actualizar tarea '"></app-button-submit>
+            </div>
+
+
+
+
+
+
+
+     </form>
+  </div>
+</div>
+
+<!-- Offcanvas Top de pantalla completa horizontalmente agregar talleres -->
+<div class="offcanvas offcanvas-top offcanvas-top-full custom-offcanvas-transition" tabindex="-1" id="offcanvasTopFullTaller"
+    aria-labelledby="offcanvasTopFullLabel">
+    <div class="offcanvas-header  text-white">
+        <h5 id="offcanvasTopFullLabel">Agregar Taller</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body">
+
+        <form (ngSubmit)="guardarTalleres()" #formTarea="ngForm">
+            <div class="mb-3">
+                <label for="tituloTema" class="form-label"><b>Título de la taller</b></label>
+                <app-inputs label="Ej: Introducción a la Cartografía" type="text" name="tituloTarea" [(ngModel)]="nuevaTarea.titulo"
+                    [required]="true">
+                </app-inputs>
+            </div>
+            <div class="mb-3">
+                <label for="contenidoTexto" class="form-label"><b>Contenido</b></label>
+               <app-editor-text  [(contenido)]="nuevaTarea.contenido" placeholder="Escribe aquí el contenido detallado del taller...">
+                </app-editor-text>
+            </div>
+
+            <div class="row g-4 mb-4 fecha-tarea-wrapper">
+                <div class="col-md-6">
+                    <div class="campo-fecha bg-light rounded p-3 shadow-sm h-100">
+                        <label class="form-label fw-bold text-primary"><i class="fas fa-calendar-alt me-1"></i> Fecha de
+                            inicio</label>
+                        <input type="datetime-local" class="form-control fecha-input" name="fecha_inicio" [(ngModel)]="nuevaTarea.fecha_inicio" />
+                    </div>
+                </div>
+            
+                <div class="col-md-6">
+                    <div class="campo-fecha bg-light rounded p-3 shadow-sm h-100">
+                        <label class="form-label fw-bold text-success"><i class="fas fa-calendar-check me-1"></i> Fecha de
+                            entrega</label>
+                        <input type="datetime-local" class="form-control fecha-input" name="fecha_entrega" [(ngModel)]="nuevaTarea.fecha_entrega" />
+                    </div>
+                </div>
+            
+                <div class="col-md-6">
+                    <div class="campo-fecha bg-light rounded p-3 shadow-sm h-100">
+                        <label class="form-label fw-bold text-warning"><i class="fas fa-clock me-1"></i> Fecha límite de
+                            entrega</label>
+                        <input type="datetime-local" class="form-control fecha-input" name="fecha_limite_entrega"
+                            [(ngModel)]="nuevaTarea.fecha_limite_entrega" />
+                    </div>
+                </div>
+            
+                <div class="col-md-6">
+                    <div class="campo-fecha bg-light rounded p-3 shadow-sm h-100">
+                        <label class="form-label fw-bold text-danger"><i class="fas fa-bell me-1"></i> Recordarme calificar</label>
+                        <input type="datetime-local" class="form-control fecha-input" name="recordarme_calificar"
+                            [(ngModel)]="nuevaTarea.recordarme_calificar" />
+                    </div>
+                </div>
+
+            </div>
+
+        <div class="col-md-12 mb-5">
+            <label class="form-label fw-bold mx-2">Tipo de entrega</label>
+        
+            <div class="row g-3">
+                <div class="col-12 col-sm-6 col-lg-6" *ngFor="let tipo of tiposEntrega">
+                    <button type="button"
+                        class="btn btn-block text-start p-3 w-100 shadow-sm rounded border transition-custom fw-semibold"
+                        [ngClass]="{
+                    'bg-active-archivo text-white': entregaSeleccionada === tipo.valor,
+                    'btn-outline-secondary': entregaSeleccionada !== tipo.valor
+                  }" (click)="seleccionarEntrega(tipo.valor)">
+                        <i class="me-2" [ngClass]="tipo.icono"></i> {{ tipo.nombre }}
+                    </button>
+        
+                </div>
+            </div>
+        </div>
+
+
+
+        
+        <!-- Solo si se selecciona "Archivo" -->
+        <div class="container-fluid mt-3 mb-3">
+            <div class="col-md-12" *ngIf="entregaSeleccionada === 'archivo'">
+                <label class="form-label fw-bold">Selecciona el tipo de archivo permitido</label>
+                <div class="row">
+                    <div class="col-sm-6 col-md-4 mb-2" *ngFor="let archivo of tiposArchivosPermitidos">
+                        <div
+                            class="form-check border rounded p-2 shadow-sm bg-light d-flex align-items-center transition-custom">
+                            <input class="form-check-input mx-2" type="radio" name="tipoArchivoPermitido"
+                                [value]="archivo.extension" [(ngModel)]="tipoArchivoSeleccionado" required />
+                            <i class="fa-solid {{ archivo.icono }} me-2 fs-3" [style.color]="archivo.colorIcono"></i>
+                            <label class="form-check-label">
+                                {{ archivo.tipo }}
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-12 mb-3">
+        <label class="form-label fw-bold mx-2">¿Es una actividad grupal?</label>
+
+        <div class="row g-3">
+            <div class="col-12 col-sm-6">
+                <button type="button"
+                    class="btn btn-block w-100 p-3 shadow-sm rounded border transition-custom fw-semibold text-start" [ngClass]="{
+                        'bg-active-archivo text-white': esGrupal === 1,
+                        'btn-outline-secondary': esGrupal !== 1
+                    }" (click)="esGrupal = 1">
+                    <i class="fa-solid fa-users"></i> &nbsp; Grupal
+                </button>
+            </div>
+
+            <div class="col-12 col-sm-6">
+                <button type="button"
+                    class="btn btn-block w-100 p-3 shadow-sm rounded border transition-custom fw-semibold text-start" [ngClass]="{
+                        'bg-active-archivo text-white': esGrupal === 0,
+                        'btn-outline-secondary': esGrupal !== 0
+                    }" (click)="esGrupal = 0">
+                 <i class="fa-solid fa-user"></i> &nbsp; Individual
+                </button>
+            </div>
+        </div>
+        </div>
+
+
+
+            <label for="contenidoTexto" class="form-label mt-2"><b>Archivo abjuntos</b></label>
+            <div class="dropzone" (drop)="onDropArchivo($event)" (dragover)="onDragOverArchivo($event)"
+                (dragleave)="onDragOverArchivo($event)">
+                <input type="file" multiple (change)="onFileSelectedArchivo($event)" hidden #fileInputArchivo>
+                <div class="dropzone-content" (click)="fileInputArchivo.click()">
+                    <i class="fas fa-cloud-upload-alt icon"></i>
+                    <p>Arrastra tus archivos aquí o haz clic para seleccionarlos</p>
+                </div>
+            </div>
+
+            <div class="preview-container text-center">
+                <div class="preview-card" *ngFor="let archivo of archivosEducativos; let i = index">
+
+                    <!-- Icono o miniatura centrado -->
+                    <div class="preview-media">
+                        <img *ngIf="esImagenArchivo(archivo)" [src]="archivo.preview" alt="Previsualización" />
+                        <i *ngIf="!esImagenArchivo(archivo)" [ngClass]="obtenerIconoArchivo(archivo.name)"
+                            class="archivo-icono"></i>
+                    </div>
+
+                    <!-- Nombre del archivo debajo del icono/imagen -->
+                    <div class="archivo-nombre">{{ archivo.name }}</div>
+
+                    <!-- Botón eliminar en la esquina superior derecha -->
+                    <button type="button" class="btn-eliminar" (click)="eliminarArchivoEducativo(i)"> <i
+                            class="fas fa-trash-alt me-1"></i></button>
+                </div>
+            </div>
+
+             <div class="text-center mt-2">
+                    <app-button-submit  [text]="'Agregar taller '"></app-button-submit>
+                </div>
+
+        </form> 
+
+    </div>
+</div>
+
+<div class="offcanvas offcanvas-bottom offcanvas-top-full  custom-offcanvas-transition" tabindex="-1" id="offcanvasBottomeditarTaller" aria-labelledby="offcanvasBottomLabel">
+  <div class="offcanvas-header text-white">
+    <h5 class="offcanvas-title" id="offcanvasBottomLabel">Editar taller: {{ contenidoEditandoTareas?.titulo_tarea }}</h5>
+    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Cerrar"></button>
+  </div>
+  <div class="offcanvas-body small">
+     <form (ngSubmit)="EditarTalleresRegistrados(contenidoEditandoTareas.id_contenido,contenidoEditandoTareas.id_taller)" #formTarea="ngForm">
+        <div class="mb-3">
+            <label for="tituloTema" class="form-label"><b>Título del taller</b></label>
+            <app-inputs label="Ej: Introducción a la Cartografía" type="text" name="tituloTarea"
+                [(ngModel)]="contenidoEditandoTareas.titulo_tarea" [required]="true">
+            </app-inputs>
+        </div>
+        <div class="mb-3">
+            <label for="contenidoTexto" class="form-label"><b>Contenido</b></label>
+            <app-editor-text  [(contenido)]="contenidoEditandoTareas.descripcion" placeholder="Escribe aquí el contenido detallado de la tarea...">
+            </app-editor-text>
+        </div>
+        <div class="row g-4 mb-4 fecha-tarea-wrapper">
+                <div class="col-md-6">
+                    <div class="campo-fecha bg-light rounded p-3 shadow-sm h-100">
+                        <label class="form-label fw-bold text-primary"><i class="fas fa-calendar-alt me-1"></i> Fecha de
+                            inicio</label>
+                        <input type="datetime-local" class="form-control fecha-input" name="fecha_inicio" [(ngModel)]="contenidoEditandoTareas.fecha_inicio" />
+                    </div>
+                </div>
+            
+                <div class="col-md-6">
+                    <div class="campo-fecha bg-light rounded p-3 shadow-sm h-100">
+                        <label class="form-label fw-bold text-success"><i class="fas fa-calendar-check me-1"></i> Fecha de
+                            entrega</label>
+                        <input type="datetime-local" class="form-control fecha-input" name="fecha_entrega" [(ngModel)]="contenidoEditandoTareas.fecha_entrega" />
+                    </div>
+                </div>
+            
+                <div class="col-md-6">
+                    <div class="campo-fecha bg-light rounded p-3 shadow-sm h-100">
+                        <label class="form-label fw-bold text-warning"><i class="fas fa-clock me-1"></i> Fecha límite de
+                            entrega</label>
+                        <input type="datetime-local" class="form-control fecha-input" name="fecha_limite_entrega"
+                            [(ngModel)]="contenidoEditandoTareas.fecha_limite_entrega" />
+                    </div>
+                </div>
+            
+                <div class="col-md-6">
+                    <div class="campo-fecha bg-light rounded p-3 shadow-sm h-100">
+                        <label class="form-label fw-bold text-danger"><i class="fas fa-bell me-1"></i> Recordarme calificar</label>
+                        <input type="datetime-local" class="form-control fecha-input" name="recordarme_calificar"
+                            [(ngModel)]="contenidoEditandoTareas.recordarme_calificar" />
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="col-md-12 mb-5">
+                <label class="form-label fw-bold mx-2">Tipo de entrega</label>
+            
+                <div class="row g-3">
+                    <div class="col-12 col-sm-6 col-lg-6" *ngFor="let tipo of tiposEntrega">
+                        <button type="button"
+                            class="btn btn-block text-start p-3 w-100 shadow-sm rounded border transition-custom fw-semibold"
+                            [ngClass]="{
+                                'bg-active-archivo text-white': entregaSeleccionada === tipo.valor,
+                                'btn-outline-secondary': entregaSeleccionada !== tipo.valor
+                              }" (click)="seleccionarEntrega(tipo.valor)">
+                            <i class="me-2" [ngClass]="tipo.icono"></i> {{ tipo.nombre }}
+                        </button>
+            
+                    </div>
+                </div>
+            </div>
+
+
+            <!--archivos adjuntos talleres-->
+             <div class="lista-archivos" *ngIf="listaArchivos?.length > 0" >
+                <h5 class="mb-3">Archivos Adjuntos:</h5>
+                <div *ngFor="let archivo of listaArchivos; let i = index" class="archivo-item">
+                    <i [ngClass]="getIconoArchivo(archivo)" class="icono-archivo me-2"></i>
+                    <span class="nombre-archivos me-2">{{archivo }}</span>
+                    <a [href]="CargarImagenes(7, archivo)" target="_blank"
+                        class="btn btn-download-archivo btn-sm me-2">
+                        <i class="fa-solid fa-download"></i>
+                    </a>
+                    <button type="button" class="btn btn-outline-danger btn-sm"
+                        (click)="EliminarArchivoTallerRegistrado(archivo,contenidoEditandoTareas.id_taller,contenidoEditandoTareas.titulo_tarea,contenidoEditandoTareas.id_contenido)">
+                        <i class="fa-solid fa-trash"></i>
+                    </button>
+                </div>
+            </div>
+
+           
+
+             <!-- Solo si se selecciona "Archivo" -->
+            <div class="container-fluid mt-3 mb-3">
+                <div class="col-md-12" *ngIf="entregaSeleccionada === 'archivo'">
+                    <label class="form-label fw-bold">Selecciona el tipo de archivo permitido</label>
+                    <div class="row">
+                        <div class="col-sm-6 col-md-6 mb-2" *ngFor="let archivo of tiposArchivosPermitidos">
+                            <div
+                                class="form-check border rounded p-2 shadow-sm bg-light d-flex align-items-center transition-custom">
+                                <input class="form-check-input mx-2" type="radio" name="tipoArchivoPermitido"
+                                    [value]="archivo.extension" [(ngModel)]="tipoArchivoSeleccionado" required />
+                                <i class="fa-solid {{ archivo.icono }} me-2 fs-3" [style.color]="archivo.colorIcono"></i>
+                                <label class="form-check-label">
+                                    {{ archivo.tipo }}
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-12 mb-3">
+                <label class="form-label fw-bold mx-2">¿Es una actividad grupal?</label>
+            
+                <div class="row g-3">
+                    <div class="col-12 col-sm-6">
+                        <button type="button"
+                            class="btn btn-block w-100 p-3 shadow-sm rounded border transition-custom fw-semibold text-start"
+                            [ngClass]="{
+                                    'bg-active-archivo text-white': esGrupal === 1,
+                                    'btn-outline-secondary': esGrupal !== 1
+                                }" (click)="esGrupal = 1">
+                            <i class="fa-solid fa-users"></i> &nbsp; Grupal
+                        </button>
+                    </div>
+            
+                    <div class="col-12 col-sm-6">
+                        <button type="button"
+                            class="btn btn-block w-100 p-3 shadow-sm rounded border transition-custom fw-semibold text-start"
+                            [ngClass]="{
+                                    'bg-active-archivo text-white': esGrupal === 0,
+                                    'btn-outline-secondary': esGrupal !== 0
+                                }" (click)="esGrupal = 0">
+                            <i class="fa-solid fa-user"></i> &nbsp; Individual
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+
+            <label for="contenidoTexto" class="form-label mt-2"><b>Archivo abjuntos</b></label>
+            <div class="dropzone" (drop)="onDropArchivo($event)" (dragover)="onDragOverArchivo($event)"
+                (dragleave)="onDragOverArchivo($event)">
+                <input type="file" multiple (change)="onFileSelectedArchivo($event)" hidden #fileInputArchivo>
+                <div class="dropzone-content" (click)="fileInputArchivo.click()">
+                    <i class="fas fa-cloud-upload-alt icon"></i>
+                    <p>Arrastra tus archivos aquí o haz clic para seleccionarlos</p>
+                </div>
+            </div>
+            
+            <div class="preview-container text-center">
+                <div class="preview-card" *ngFor="let archivo of archivosEducativos; let i = index">
+            
+                    <!-- Icono o miniatura centrado -->
+                    <div class="preview-media">
+                        <img *ngIf="esImagenArchivo(archivo)" [src]="archivo.preview" alt="Previsualización" />
+                        <i *ngIf="!esImagenArchivo(archivo)" [ngClass]="obtenerIconoArchivo(archivo.name)"
+                            class="archivo-icono"></i>
+                    </div>
+            
+                    <!-- Nombre del archivo debajo del icono/imagen -->
+                    <div class="archivo-nombre">{{ archivo.name }}</div>
+            
+                    <!-- Botón eliminar en la esquina superior derecha -->
+                    <button type="button" class="btn-eliminar" (click)="eliminarArchivoEducativo(i)"> <i
+                            class="fas fa-trash-alt me-1"></i></button>
+                </div>
+            </div>
+            
+            <div class="text-center mt-2">
+                <app-button-submit [text]="'Actualizar taller '"></app-button-submit>
+            </div>
+     </form>
+  </div>
+</div>
+
+
+<!-- entrar a ver la informacion de los foros -->
+<div class="offcanvas offcanvas-bottom offcanvas-top-full  custom-offcanvas-transition" tabindex="-1" id="offcanvasBottomRevisarForo" aria-labelledby="offcanvasBottomLabel">
+  <div class="offcanvas-header text-white">
+    <h5 class="offcanvas-title" id="offcanvasBottomLabel">Foro </h5>
+    <button type="button"  class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Cerrar"></button>
+  </div>
+  <div class="offcanvas-body small">
+    <h2 class="form-title mt-1"><i class="fa-solid fa-users-viewfinder"></i>&nbsp; &nbsp; {{ InformacionForo.titulo || 'Sin título' }}</h2>
+    <div class="contenido-texto" [innerHTML]="decodeHTML(InformacionForo?.contenido_texto)"></div>
+
+    <div class="card p-3 shadow-sm mb-4" *ngIf="usuario?.id_rol != 3 && !yaParticipo">
+        <h5 class="mb-3">Participar en el foro</h5>
+    
+        <form (ngSubmit)="enviarParticipacion()">
+            <div class="mb-3">
+                <label for="titulo" class="form-label"><b>Título de tu aporte</b></label>
+                <app-inputs label="Ej:Titulo del foro" type="text" name="titulo" [(ngModel)]="nuevaParticipacion.titulo"
+                    [required]="true">
+                </app-inputs>
+            </div>
+            <div class="mb-3">
+                <label for="respuesta" class="form-label">Tu respuesta</label>
+                <app-editor-text [(contenido)]="nuevaParticipacion.respuesta"
+                    placeholder="Escribe aquí el contenido detallado de la tu respuesta...">
+                </app-editor-text>
+            </div>
+            <div class="text-center mt-2">
+                <app-button-submit [text]="'Enviar respuesta '"></app-button-submit>
+            </div>
+        </form>
+    </div>
+
+    <!-- Listado de participaciones -->
+
+        <div class="list-group" *ngFor="let discusion of listaDiscuciones">
+            <div class="list-group-item rounded shadow-sm mb-3 bg-light ">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div class="fw-bold text-foro">
+                        <i class="fas fa-comments me-1"></i> {{ discusion.titulo_discusion }}
+                    </div>
+                    <small class="text-muted">Publicado el {{ discusion.fecha_creacion | date:'medium' }}</small>
+                </div>
+
+                <div class="d-flex align-items-center mt-2">
+                    <div class="avatar">
+                        <a *ngIf="discusion?.imagen_usuario" [href]="CargarImagenes(3, discusion.imagen_usuario)" data-lightbox="perfil"
+                            [attr.data-title]="usuario?.nombres || 'Usuario'">
+                            <img [src]="CargarImagenes(3, discusion.imagen_usuario)" alt="{{ discusion.imagen_usuario }}" class="img-thumbnail rounded-circle" width="60" height="60" />
+                        </a>
+                    </div>
+                    &nbsp;&nbsp;
+                    <span class="badge bg-entrar-foro">Nombre de usuario: {{ discusion.nombre_usuario }}</span>
+                </div>
+
+                <div class="mt-3">
+                    <div [class.colapsado]="!discusion.expandido" [innerHTML]="decodeHTML(discusion.descripcion)">
+                    </div>
+                
+                    <div class="mt-3 d-flex justify-content-between align-items-center flex-wrap">
+                        <button *ngIf="descripcionEsLarga(discusion.descripcion)" (click)="discusion.expandido = !discusion.expandido"
+                            class="btn  p-0 text-mostrar-mas mt-1">
+                            {{ discusion.expandido ? 'Ver menos ▲' : 'Ver más ▼' }}
+                        </button>
+                    
+                        <button *ngIf="discusion.creado_por == usuario?.documento" class="btn btn-outline-foro btn-sm"
+                            (click)="abrirCollageDiscusion(discusion)">
+                            <i class="fa-solid fa-file-pen"></i> Actualizar discusión
+                        </button>
+
+                    </div>
+
+                    <!-- Mostrar collage para editar informacion anidados -->
+
+                    <div class="collage-editor" *ngIf="mostrandoCollage">
+                        <div class="collage-box shadow">
+                            <div class="collage-header d-flex justify-content-between align-items-center">
+                                <h6 class="m-0">Editar Discusión</h6>
+                                <button class="btn-close text-white" (click)="cerrarCollage()"></button>
+                            </div>
+                            <div class="collage-body p-3 mt-3">
+                                <label><strong>Título actual:</strong></label>
+                                <app-inputs label="Ej:Titulo del foro" type="text" name="titulo" [(ngModel)]="discusionEnEdicion.tituloEditado"
+                                    [required]="true">
+                                </app-inputs>
+                                
+                                <label><strong>Descripción actual:</strong></label>
+                                <app-editor-text [(contenido)]="discusionEnEdicion.descripcionEditada"
+                                    placeholder="Escribe aquí el contenido detallado de la tu respuesta...">
+                                </app-editor-text>
+                                
+                            
+                                <div class="text-end mt-3">
+                                    <button class="btn btn-success me-2" (click)="guardarActualizacionDiscusion()">Guardar</button>
+                                    <button class="btn btn-secondary" (click)="cerrarCollage()">Cancelar</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                </div>
+
+                <!-- Mostrar comentarios anidados -->
+                <div class="mt-4 ps-3 border-start" *ngIf="discusion.comentarios">
+                    <app-comentarios [comentarios]="discusion.comentarios" (refrescarComentarios)="ObtenerDiscucionesFrosos()">
+                    </app-comentarios>
+                </div>
+
+            <div class="mt-3 d-flex justify-content-between align-items-center flex-wrap">
+                <button class="btn btn-outline-foro btn-sm" (click)="mostrarRespuesta(discusion)">
+                    <i class="fas fa-reply me-1"></i> Responder
+                </button>
+            
+                <!-- Botón para eliminar discusión (solo si la creó el usuario actual) -->
+                <button *ngIf="discusion.creado_por == usuario?.documento" class="btn  btn-outline-danger btn-sm"
+                    (click)="eliminarDiscusion(discusion)">
+                    <i class="fas fa-trash-alt me-1"></i> Eliminar discusión
+                </button>
+            </div>
+
+
+                <!-- Formulario para responder -->
+                <div *ngIf="discusion.mostrarFormulario" class="mt-3 animate__animated animate__fadeIn">
+
+                    <label for="respuesta" class="form-label"><b>Tu respuesta</b></label>
+                    <textarea [(ngModel)]="discusion.respuestaTexto" class="form-control form-control-sm" rows="2" placeholder="Escribe tu respuesta..."></textarea>
+                    <div class="mt-2">
+                        <button class="btn btn-success btn-sm me-2" (click)="enviarRespuesta(discusion)">Enviar <i class="fa-regular fa-paper-plane"></i></button>
+                        <button class="btn btn-secondary btn-sm" (click)="discusion.mostrarFormulario = false">Cancelar <i class="fa-solid fa-xmark"></i></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+  </div>
+</div>
+
+<!-- entrar a ver la informacion de las tareas -->
+<div class="offcanvas offcanvas-bottom offcanvas-top-full  custom-offcanvas-transition" tabindex="-1"
+    id="offcanvasBottomRevisarTareas" aria-labelledby="offcanvasBottomLabel">
+    <div class="offcanvas-header text-white">
+        <h5 class="offcanvas-title" id="offcanvasBottomLabel">{{ contenidoEditandoTareas?.titulo_tarea }}</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas"
+            aria-label="Cerrar"></button>
+    </div>
+    <div class="offcanvas-body small">
+        <h2 class="form-title mt-1"><i class="fa-solid fa-folder-open"></i>&nbsp; &nbsp; {{
+            contenidoEditandoTareas?.titulo_tarea || 'Sin título' }}</h2>
+        <!--archivos adjuntos tareas-->
+        <div class="lista-archivos" *ngIf="listaArchivos?.length > 0">
+            <h5 class="mb-3">Archivos Adjuntos:</h5>
+            <div *ngFor="let archivo of listaArchivos; let i = index" class="archivo-item">
+                <i [ngClass]="getIconoArchivo(archivo)" class="icono-archivo me-2"></i>
+                <span class="nombre-archivos me-2">{{archivo }}</span>
+                <a [href]="CargarImagenes(7, archivo)" target="_blank" class="btn btn-download-archivo btn-sm me-2">
+                    <i class="fa-solid fa-download"></i>
+                </a>
+            </div>
+        </div>
+    
+        <div class="mb-3 p-4">
+            <div class="contenido-texto" [innerHTML]="decodeHTML(contenidoEditandoTareas.descripcion)"></div>
+        </div>
+
+        <!-- Formulario para responder las tareas estudiantes -->
+          <ng-container *ngIf="usuario?.id_rol != 3 ">
+            <div class="tarea-container">
+                <!-- Estado de entrega -->
+                <div class="tarea-estado">
+                    <h2 class="form-title text-white mt-1">
+                        <i class="fa-solid fa-folder-open"></i>&nbsp;&nbsp;{{ usuario?.nombres }}
+                    </h2>
+                    <table class="tabla-estado">
+                        <tbody>
+                            <tr>
+                                <th>Estado de entrega:</th>
+                                <td><span [ngClass]="{
+                                    'estado-no': ResultadoEntregaEstudiante?.fechaEntregaReal === null,
+                                    'estado-ok': ResultadoEntregaEstudiante?.fechaEntregaReal !== null
+                                    }">
+                                        {{ ResultadoEntregaEstudiante?.modoEntrega }}
+                                    </span></td>
+                            </tr>
+                            <tr>
+                                <th>Estado de calificación:</th>
+                                <td>{{ResultadoEntregaEstudiante?.estadoCalificacion}}</td>
+                            </tr>
+                            <tr>
+                                <th>Fecha de entrega:</th>
+                                <td>
+                                    {{  (contenidoEditandoTareas.fecha_entrega | date:'EEEE, d MMMM y, h:mm a') }}
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Tiempo restante:</th>
+                                <td><span [class.estado-tiempo]="!entregaVencida" [class.text-danger]="entregaVencida">
+                                        {{ tiempoRestante }} {{
+                                        ResultadoEntregaEstudiante?.entregaEstudiante === null
+                                        ? 'Tiempo para enviar la tarea'
+                                        : 'Tiempo para realizar modificaciones'
+                                        }}
+                                    </span></td>
+                            </tr>
+                            <tr>
+                                <th>Última modificación:</th>
+                                <td>
+                                    {{  (contenidoEditandoTareas.fecha_limite_entrega | date:'EEEE, d MMMM y, h:mm a') }}
+                                </td>
+                            </tr>
+
+                            <tr *ngIf="ResultadoEntregaEstudiante?.tipo === 'archivo'">
+                                <th>Archivo entregado:</th>
+                                <td>
+                                    <a [href]="CargarImagenes(9, ResultadoEntregaEstudiante.archivo)" target="_blank"
+                                        class="btn btn-download-archivo btn-sm me-2">
+                                        {{ ResultadoEntregaEstudiante.archivo }} &nbsp; <i class="fa-solid fa-download"></i>
+                                    </a>
+                            
+                                    <!-- Botón eliminar: solo si NO está calificado -->
+                                    <button *ngIf="!ResultadoEntregaEstudiante?.calificado" class="btn btn-outline-danger btn-sm"
+                                        (click)="eliminarEntregaTarea(ResultadoEntregaEstudiante?.id_entrega, ResultadoEntregaEstudiante.archivo)">
+                                        <i class="fa-solid fa-trash"></i> Eliminar entrega
+                                    </button>
+                                </td>
+                            </tr>
+
+                        <tr *ngIf="ResultadoEntregaEstudiante?.tipo === 'texto'">
+                            <th>Texto entregado:</th>
+                            <td>
+                                <button class="btn btn-outline-primary btn-sm" (click)="mostrarTextoEntrega()">
+                                    Ver texto entregado
+                                </button>
+                            </td>
+
+
+                            <!-- Modal elegante -->
+                            <div class="modal-overlay" *ngIf="mostrarModalTexto">
+                                <div class="modal-contenido">
+                                    <div class="modal-header header-modal-ver-texto">
+                                        <h5>Texto entregado</h5>
+                                        <button class="cerrar" (click)="cerrarModalTexto()">&times;</button>
+                                    </div>
+                                    <div class="modal-body modal-ver-texto" >
+                                        <div class="contenido-texto" [innerHTML]="decodeHTML(ResultadoEntregaEstudiante?.texto)"></div>
+                                        <div class="text-center">
+                                            <button *ngIf="!ResultadoEntregaEstudiante?.calificado" class="btn btn-outline-danger btn-sm"
+                                                (click)="eliminarEntregaTextoTarea(ResultadoEntregaEstudiante?.id_entrega)">
+                                                <i class="fa-solid fa-trash"></i> Eliminar texto
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </tr>
+
+
+                            <tr>
+                                <th>Comentarios de la entrega:</th>
+                                <td>
+                                    <span
+                                        [ngClass]="{'text-dark': ResultadoEntregaEstudiante?.retroalimentacion, 'text-muted': !ResultadoEntregaEstudiante?.retroalimentacion}">
+                                        {{ ResultadoEntregaEstudiante?.retroalimentacion || 'Sin comentarios' }}
+                                    </span>
+                                </td>
+                            </tr>
+
+
+
+                        </tbody>
+                    </table>
+                </div>
+
+
+                <div *ngIf="modoFormulario === 'formulario'" class="mt-4 p-3">
+
+                    <div class="text-end mb-3">
+                        <button class="btn btn-outline-danger btn-sm" (click)="cancelarFormularioEntrega()">
+                            <i class="fas fa-times"></i> Cancelar entrega
+                        </button>
+                    </div>
+
+                    <div *ngIf="tipoEntrega === 'archivo'" class="mt-4">
+                        <label for="contenidoTexto" class="form-label mt-2"><b>Archivo abjuntos</b></label>
+                        <div class="dropzone" (drop)="onDropArchivo($event)" (dragover)="onDragOverArchivo($event)"
+                            (dragleave)="onDragOverArchivo($event)">
+                            <input type="file" [accept]="tipoArchivoPermitido" (change)="onFileSelectedArchivo($event)" hidden #fileInputArchivo>
+                            <div class="dropzone-content" (click)="fileInputArchivo.click()">
+                                <i class="fas fa-cloud-upload-alt icon"></i>
+                                <p>Arrastra tu archivos aquí o haz clic para seleccionarlo</p>
+                            </div>
+                        </div>
+                    
+                        <div class="preview-container text-center">
+                            <div class="preview-card" *ngFor="let archivo of archivosEducativos; let i = index">
+                    
+                                <!-- Icono o miniatura centrado -->
+                                <div class="preview-media">
+                                    <img *ngIf="esImagenArchivo(archivo)" [src]="archivo.preview" alt="Previsualización" />
+                                    <i *ngIf="!esImagenArchivo(archivo)" [ngClass]="obtenerIconoArchivo(archivo.name)"
+                                        class="archivo-icono"></i>
+                                </div>
+                                <!-- Nombre del archivo debajo del icono/imagen -->
+                                <div class="archivo-nombre">{{ archivo.name }}</div>
+                    
+                                <!-- Botón eliminar en la esquina superior derecha -->
+                                <button type="button" class="btn-eliminar" (click)="eliminarArchivoEducativo(i)"> <i
+                                        class="fas fa-trash-alt me-1"></i></button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div *ngIf="tipoEntrega === 'texto'" class="mt-4">
+                        <app-editor-text [(contenido)]="contenidoTareaEstudiante"
+                            placeholder="Escribe aquí el contenido detallado de la tarea...">
+                        </app-editor-text>
+                    </div>
+            </div>
+            
+
+            <!-- Mostrar el botón solo si no está vencido -->
+                <div class="text-center mt-5 mt-4" *ngIf="!entregaVencida">
+                    <app-button-submit (click)="modoFormulario === 'formulario' ? enviarEntrega() : activarFormularioEntrega()"
+                        [text]="modoFormulario === 'formulario' ? 'Enviar entrega' : 'Entregar Tarea'">
+                    </app-button-submit>
+                </div>
+
+
+
+            </div>
+        </ng-container>
+
+
+    </div>
+</div>
+

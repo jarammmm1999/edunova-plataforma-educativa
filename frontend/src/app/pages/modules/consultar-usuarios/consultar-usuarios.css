@@ -1,0 +1,414 @@
+.barra-superior {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  padding: 10px 0px;
+
+}
+.barra-superior  app-buscador{
+  width: 60% !important;
+}
+
+.tabla-usuarios {
+  position: relative;
+  width: 100%;
+  border-collapse: collapse;
+  overflow: hidden;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+  animation: fadeInUp 0.8s ease;
+}
+
+.tabla-usuarios thead {
+  background-color: var(--color-primario);
+  color: white;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.tabla-usuarios th,
+.tabla-usuarios td {
+  padding: 12px 10px;
+  text-align: center;
+  transition: all 0.2s ease-in-out;
+}
+
+.tabla-usuarios tbody tr {
+  transition: background-color 0.3s ease;
+}
+
+.tabla-usuarios tbody tr:hover {
+  background-color: var(--color-primario);
+  color: white;
+  cursor: pointer;
+}
+
+/* ✅ Imagen de avatar */
+.avatar {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--color-primario);
+  transition: transform 0.2s ease-in-out;
+}
+
+.avatar img{
+  width: 100%;
+  height: 100%;
+  border-radius:50%;
+}
+
+.avatar:hover {
+  transform: scale(1.15);
+}
+
+/* ✅ Botones */
+.btn-editar,
+.btn-eliminar {
+  background: none;
+  border: none;
+  font-size: 18px;
+  cursor: pointer;
+  margin: 0 5px;
+  transition: transform 0.2s, color 0.2s;
+}
+.btn-editar{
+  color: #28a745;
+}
+
+.btn-editar:hover {
+  color: #ffc107;
+  transform: scale(1.2);
+}
+
+.btn-eliminar:hover {
+  color: #e53935;
+  transform: scale(1.2);
+}
+/***********************************paginar***********************************************/
+.paginacion-contenedor {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 20px;
+  animation: fadeIn 0.4s ease-in-out;
+  gap: 10px;
+}
+
+.label-cantidad {
+  font-weight: 500;
+  font-size: 14px;
+}
+
+.input-registros {
+  width: 60px;
+  margin-left: 6px;
+  padding: 4px 8px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-weight: bold;
+  text-align: center;
+  transition: border-color 0.3s;
+}
+
+.input-registros:focus {
+  border-color: var(--color-primario);
+  outline: none;
+}
+
+.botones-paginacion {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.boton-paginador {
+  padding: 6px 12px;
+  border: none;
+  background-color: var(--color-primario);
+  color: white;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.3s;
+}
+
+.boton-paginador:hover {
+  background-color: var(--color-primario);
+}
+
+.boton-paginador.activo {
+  background-color: #ffc107;
+  color: #000;
+}
+
+.boton-paginador:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+/****************************************************/
+.offcanvas {
+  transition: transform 0.9s ease-in-out; /* antes: 0.3s, ahora: 0.6s */
+}
+.offcanvas-fullscreen {
+  width: 100vw !important;
+  height: 100vh !important;
+  max-width: none;
+  top: 0;
+}
+
+.offcanvas-header{
+  background: var(--color-primario) !important;
+}
+.btn-close {
+  filter: invert(1);
+}
+
+
+.card-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center; /* o space-between / start */
+  gap: 20px; /* separación entre tarjetas */
+}
+
+.file-card-profesional {
+  width: 180px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  overflow: hidden;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
+  transition: transform 0.3s ease;
+}
+
+.file-card-profesional:hover {
+  transform: translateY(-5px);
+  cursor: pointer;
+}
+
+.file-icon-container {
+  position: relative;
+  background: #f8f9fa;
+  padding: 25px;
+  text-align: center;
+}
+
+.file-icon {
+  width: 125px;
+  height: auto;
+  opacity: 0.9;
+  transition: transform 0.3s ease;
+}
+
+.file-card-profesional:hover .file-icon {
+  transform: scale(1.05);
+}
+
+.file-overlay {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  display: flex;
+  gap: 8px;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.file-card-profesional:hover .file-overlay {
+  opacity: 1;
+}
+
+.action-btn {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: none;
+  font-size: 15px;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s ease, background-color 0.2s ease;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+}
+
+.action-btn.view {
+  background-color: var(--color-primario);
+}
+
+.action-btn.delete {
+  background-color: #dc3545;
+}
+
+.action-btn:hover {
+  transform: scale(1.15);
+}
+
+.file-title {
+  background-color: var(--color-primario, #ffffff);
+  color: #fff;
+  padding: 12px;
+  text-align: center;
+  font-weight: 600;
+  font-size: 14px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/*******************************************************************************/
+.profile-cards-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+  padding: 20px;
+}
+
+.profile-card {
+  display: flex;
+  align-items: center;
+  width: 48%;
+  padding: 25px 25px;
+  border-radius: 16px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+  background-color: white;
+  transition: transform 0.3s ease;
+}
+.profile-card:hover{
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08), 0 4px 6px rgba(0, 0, 0, 0.06);
+   cursor: pointer;
+}
+
+.profile-card:hover {
+  transform: translateY(-5px);
+}
+
+.profile-img img {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-right: 16px;
+  border: 3px solid var(--color-primario);
+}
+
+.profile-info h4 {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.profile-info p {
+  margin: 7px 0;
+  font-size: 0.95rem;
+  color: #555;
+}
+
+.profile-info .rol {
+  color: #9a9a9a;
+  font-style: italic;
+}
+
+.profile-actions {
+  margin-top: 10px;
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.profile-actions button {
+  padding: 6px 12px;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: background-color 0.3s ease;
+}
+
+.btn-edit {
+  background-color: var(--color-primario);
+  color: white;
+}
+
+.btn-delete {
+  background-color: #e94e4e;
+  color: white;
+}
+
+.whatsapp-icon {
+  color: #25d366;
+  font-size: 1.4rem;
+  text-decoration: none;
+  transition: transform 0.2s ease;
+}
+
+.whatsapp-icon:hover {
+  transform: scale(1.2);
+}
+
+.correo-icon {
+  color: var(--color-primario);
+  font-size: 1.2rem;
+  text-decoration: none;
+  transition: transform 0.2s ease;
+}
+
+.correo-icon:hover {
+  transform: scale(1.2);
+}
+
+.direccion-icon {
+  color: var(--color-primario);
+  font-size: 1.2rem;
+  text-decoration: none;
+  transition: transform 0.2s ease;
+}
+
+.direccion-icon:hover {
+  transform: scale(1.2);
+}
+
+.btn-edit-acudiente{
+  width: 90%;
+  height: 50px;
+  font-size: 14px;
+  background: var(--color-primario);
+  color: white;
+  border-radius: 8px;
+}
+/* Responsive */
+@media (max-width: 600px) {
+  .profile-card {
+    width: 100%;
+    flex-direction: column;
+    text-align: center;
+  }
+  .profile-actions{
+     justify-content: center;
+     text-align: center;
+  }
+  .profile-img {
+    margin-right: 0;
+    margin-bottom: 12px;
+  }
+}

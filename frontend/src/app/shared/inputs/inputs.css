@@ -1,0 +1,54 @@
+input:focus {
+  outline: none; /* Quita el borde azul predeterminado */
+  border: 1px solid var(--color-primario); /* Aplica el nuevo borde */
+  box-shadow: 0 0 0 1px var(--color-primario); /* Opcional: halo de luz */
+}
+input {
+  border: 1px solid var(--color-primario);
+}
+
+input[type="date"].form-control {
+  padding-right: 0.75rem;
+}
+
+.input-wrapper {
+  position: relative;
+}
+
+.form-control.is-invalid {
+  border-color: #dc3545 !important; /* rojo de Bootstrap */
+  padding-right: 2.5rem; /* para que no se tape el texto con el ojo */
+}
+
+.text-danger {
+  margin-left: 0.25rem;
+  font-size: 0.875rem;
+}
+
+.form-control {
+  padding-right: 2.5rem; /* Espacio para el ícono de ojo */
+}
+
+.icono-ojo {
+  position: absolute;
+  top: 50%;
+  right: 1rem;
+  transform: translateY(-50%);
+  z-index: 2;
+  cursor: pointer;
+  font-size: 1rem;
+  color: #6c757d;
+}
+
+.icono-ojo:hover {
+  color: var(--color-primario);
+}
+
+.animate__fadeIn {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-3px); }
+  to   { opacity: 1; transform: translateY(0); }
+}

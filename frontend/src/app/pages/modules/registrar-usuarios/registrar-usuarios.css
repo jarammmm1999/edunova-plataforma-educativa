@@ -1,0 +1,8 @@
+
+/************************************************************************************/
+.card-acudientes{
+  border: 2px solid var(--color-primario)
+}
+.text-acudiente{
+  color: var(--color-primario);
+}

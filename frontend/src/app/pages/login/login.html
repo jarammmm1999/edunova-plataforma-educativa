@@ -1,0 +1,120 @@
+<app-loader *ngIf="cargandodatos" [mensaje]="'Cargando login...'"></app-loader>
+
+<!-- Error de conexión -->
+<div *ngIf="error && !cargandodatos">
+  <app-error-message [mensaje]="'Hubo un error de conexión. No se pueden mostrar el login.'"
+    [imagen]="'error-conexion.png'">
+  </app-error-message>
+</div>
+
+<div class="container-main-login" *ngIf="!error">
+
+  <div class="row g-0 min-vh-100">
+    <!---------------carrousel de imagenes de portada---------------->
+    <div class="col-lg-6 d-none d-lg-block  container-section-image">
+      <div *ngIf="tieneImagenesPortada" class="carousel slide" id="carouselExampleIndicators" data-bs-ride="carousel">
+        <div class="carousel-indicators">
+          <button *ngFor="let img of imagenes; let i = index" type="button" data-bs-target="#carouselExampleIndicators"
+            [attr.data-bs-slide-to]="i" [class.active]="i === 0" [attr.aria-label]="'Slide ' + (i + 1)">
+          </button>
+        </div>
+
+        <div class="carousel-inner">
+          <div *ngFor="let img of imagenes; let i = index" class="carousel-item" [class.active]="i === 0">
+            <img [src]="CargarImagenes(2, img)" class="d-block w-100" [alt]="'Imagen portada ' + imagenes[i]" />
+          </div>
+        </div>
+
+        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators"
+          data-bs-slide="prev">
+          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Anterior</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators"
+          data-bs-slide="next">
+          <span class="carousel-control-next-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Siguiente</span>
+        </button>
+      </div>
+
+      <!--si no existe imagenes en la base de datos mostramos la que esta por defecto-->
+      <div *ngIf="!tieneImagenesPortada" class="imagen-por-defecto">
+        <img [src]="CargarImagenes(1, 'login.png')" alt="Imagen por defecto" class="img-fluid img-default">
+      </div>
+    </div>
+    <!---------------login---------------->
+    <div class="col-12 col-lg-6  content-information  ">
+      <div class="header-title-loguin  d-flex align-items-center justify-content-between px-3 ">
+        <div class="flex-shrink-0">
+          <button onclick="window.history.back()" class="btn btn-light text-dark fw-bold">
+            ←
+          </button>
+        </div>
+        <div class="flex-grow-1 text-center">
+          <h3 *ngIf="sede" class="mb-0">
+            {{sede.nombre_sede}}
+          </h3>
+        </div>
+        <div class="flex-shrink-0" style="width: 42px;"></div> <!-- Espacio para equilibrar visualmente -->
+      </div>
+
+      <div class="text-center mt-2">
+        <div *ngIf="sede" class="container-logo mt-3 mb-2">
+          <img [src]="CargarImagenes(4, sede.logo_sede)" alt="Imagen por defecto" class="img-fluid img-default">
+        </div>
+      </div>
+
+      <div class="login-container">
+        <form #loginForm="ngForm" (ngSubmit)="iniciarSesion()" class="login-form" autocomplete="off">
+          <h2 class="login-title mb-4">Iniciar Sesión</h2>
+          <div class="mt-5">
+            <app-inputs label="Usuario" type="text" name="usuario" [(ngModel)]="credenciales.usuario" [required]="true">
+            </app-inputs>
+          </div>
+          <div class="mb-4">
+            <app-inputs label="Contraseña" type="password" name="contrasena" [(ngModel)]="credenciales.contrasena"
+              [required]="true">
+            </app-inputs>
+          </div>
+          <div class="text-center ">
+            <app-button-submit [text]="'Entrar'"></app-button-submit>
+          </div>
+        </form>
+      </div>
+       <!-------------------------------------------------------------->
+          <div class="icon-strip">
+            <div class="icon-section ">
+              <div class="icon-content">
+                 <i class="fa-solid fa-lock-open"></i>
+                <span class="text">¿Olvidó su contraseña?</span>
+              </div>
+            </div>
+            <div class="icon-section ">
+              <div class="icon-content">
+                <i class="fas fa-home icon"></i>
+                <span class="text">Inicio</span>
+              </div>
+            </div>
+            <div class="icon-section ">
+              <div class="icon-content">
+                <i class="fas fa-home icon"></i>
+                <span class="text">Inicio</span>
+              </div>
+            </div>
+            <div class="icon-section ">
+              <div class="icon-content">
+                <i class="fas fa-home icon"></i>
+                <span class="text">Inicio</span>
+              </div>
+            </div>
+            <div class="icon-section ">
+              <div class="icon-content">
+                <i class="fas fa-home icon"></i>
+                <span class="text">Inicio</span>
+              </div>
+            </div>
+          </div>
+    </div>
+  </div>
+  
+</div>

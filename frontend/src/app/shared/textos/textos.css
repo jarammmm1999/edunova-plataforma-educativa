@@ -1,0 +1,46 @@
+
+.bienvenida-container {
+  max-height: 300px; /* límite de altura */
+  overflow-y: auto;  /* scroll si es necesario */
+}
+
+/* Scroll bonito en navegadores modernos */
+.bienvenida-container::-webkit-scrollbar {
+  width: 6px;
+}
+.bienvenida-container::-webkit-scrollbar-thumb {
+  background-color: var(--color-primario);
+  border-radius: 4px;
+}
+
+.bienvenida-container h2 {
+  color: var(--color-primario);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1.8rem;
+    margin-bottom: 0.5rem;
+}
+
+
+.bienvenida-container p {
+  margin-top: 0.8rem;
+  line-height: 1.9;
+  font-size: 1rem;
+  color: #333;
+}
+
+.bienvenida-descripcion {
+  text-align: justify;
+}
+
+/* Responsive: justificar solo cuando sea pantalla pequeña */
+@media (max-width: 768px) {
+  .bienvenida-descripcion {
+    text-align: justify;
+  }
+
+  .bienvenida-container {
+    max-height: 40vh;
+  }
+}

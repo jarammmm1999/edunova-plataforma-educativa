@@ -1,0 +1,150 @@
+.portada-uploader {
+  border: 2px dashed var(--color-primario);
+  padding: 20px;
+  text-align: center;
+  border-radius: 15px;
+  background: #f9f9f9;
+}
+
+.upload-area {
+  cursor: pointer;
+  padding: 40px;
+  border-radius: 10px;
+  transition: background 0.3s;
+}
+
+.upload-area:hover {
+  background: #eef1f5;
+}
+
+.preview-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  margin-top: 20px;
+  justify-content: center;
+}
+
+.preview-card {
+  position: relative;
+  width: 150px;
+  height: 120px;
+  border: 1px solid var(--color-primario);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.preview-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.btn-delete {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  background: rgba(255, 0, 0, 0.7);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  font-size: 14px;
+  cursor: pointer;
+}
+.icono-upload-alt{
+    color: var(--color-primario)!important; 
+}
+.btn-enviar_imagenes{
+    background-color: var(--color-primario)!important; 
+    color: white!important; 
+}
+
+.text-drop{
+    color: var(--color-primario)!important;
+}
+
+.upload-area {
+  transition: background-color 0.3s, border-color 0.3s;
+  border-style: dashed;
+  cursor: pointer;
+  min-height: 220px;
+}
+
+.upload-area:hover {
+  background-color: #f1f3f5;
+  border-color: var(--color-primario);
+}
+
+.card:hover {
+  transform: scale(1.02);
+  transition: transform 0.2s ease-in-out;
+}
+
+.card-img-top {
+  border-top-left-radius: 0.5rem;
+  border-top-right-radius: 0.5rem;
+}
+
+.btn-danger {
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+
+
+/******************************************************************/
+.grupo-imagenes {
+  margin-bottom: 40px;
+  padding: 10px 20px;
+}
+
+.titulo-grupo {
+  font-size: 1.5rem;
+  margin-bottom: 16px;
+  color: #2c3e50;
+  border-bottom: 2px solid #ccc;
+  padding-bottom: 8px;
+}
+
+.contenedor-cards {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 30px;
+  justify-content: center;
+}
+
+.card-imagen {
+  background-color: #fefefe;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  width: 200px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  transition: transform 0.3s ease;
+}
+
+.card-imagen:hover {
+  transform: scale(1.07);
+  cursor: pointer;
+}
+
+.card-imagen img {
+  width: 100%;
+  height: 140px;
+  object-fit: cover;
+  border-bottom: 1px solid #ddd;
+}
+
+.info-imagen {
+  padding: 10px;
+  background: var(--color-primario);
+  text-align: center;
+}
+
+.fecha {
+  font-size: 0.8rem;
+  color: #ffffff;
+  margin-bottom: 8px;
+}
+
+
+

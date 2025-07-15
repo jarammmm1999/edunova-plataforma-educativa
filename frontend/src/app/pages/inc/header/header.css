@@ -1,0 +1,280 @@
+.header-container {
+  width: 100%;
+  background-color: #ffffff;
+  border-bottom: 3px solid var(--color-primario);
+  font-family: 'Poppins', sans-serif;
+}
+
+.header-top {
+  background-color: var(--color-primario);
+  height: 40px;
+}
+
+.header-main {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.8rem 2rem;
+  gap: 2rem;
+}
+
+/* IZQUIERDA */
+.logo-wrapper {
+  flex: 0 0 auto;
+}
+
+.logo-wrapper .logo {
+  height: 60px;
+}
+
+/* CENTRO */
+.sede-nombre-wrapper {
+  flex: 1;
+  text-align: center;
+}
+
+.sede-nombre-wrapper h2 {
+  margin: 0;
+  font-size: 1.4rem;
+  font-weight: 600;
+   color: var(--color-primario);
+}
+
+/* DERECHA */
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 1.8rem;
+  flex-shrink: 0;
+}
+
+.icon-wrapper {
+  position: relative;
+  font-size: 1.2rem;
+  color: #222;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+
+
+.badge {
+  position: absolute;
+  top: -6px;
+  right: -10px;
+  background-color: var(--color-primario);
+  color: white;
+  font-size: 0.7rem;
+  font-weight: bold;
+  padding: 2px 5px;
+  border-radius: 50%;
+}
+
+/* USUARIO */
+.usuario-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  cursor: pointer;
+  position: relative;
+}
+
+.usuario-wrapper .avatar img {
+  width: 55px;
+  height: 55px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--color-primario);
+}
+
+.usuario-wrapper .nombre {
+  font-weight: 500;
+  color: #000000;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.dropdown-panel {
+  position: absolute;
+  top: 75px;
+  right: 0;
+  z-index: 999;
+ 
+}
+
+@media (max-width: 768px) {
+  .header-main {
+    flex-direction: column;
+    align-items: stretch;
+    padding: 1rem;
+    text-align: center;
+  }
+
+
+  .dropdown-panel {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+ 
+  
+    z-index: 1050;
+  }
+
+  .header-actions {
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 0.8rem;
+    flex-wrap: wrap;
+  }
+
+  .usuario-wrapper {
+    justify-content: center;
+  }
+
+  .sede-nombre-wrapper {
+    margin-top: 1rem;
+  }
+}
+
+@media (max-width: 468px) {
+  .dropdown-panel {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1050;
+  }
+
+}
+
+/********************************************************************/
+/* From Uiverse.io by chase2k25 */ 
+.ios-modern-settings__container {
+  width: 350px;
+  height: 380px;
+  background-color: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(20px);
+  border-radius: 8px;
+  padding: 14px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  overflow-y: auto;
+  position: relative;
+  scrollbar-width: none; /* Firefox */
+}
+
+.ios-modern-settings__container::-webkit-scrollbar {
+  display: none; /* Chrome, Safari */
+}
+
+.ios-modern-settings__header {
+  font-size: 20px;
+  font-weight: 600;
+  background-color: var(--color-primario);
+  color: #ffffff;
+  padding: 10px;
+  border-radius: 8px;
+  letter-spacing: -0.4px;
+  text-align: center;
+}
+
+.ios-modern-settings__card {
+  display: flex;
+  align-items: center;
+  background-color: #ffffff;
+  border-radius: 12px;
+  padding: 12px 14px;
+  margin: 4px 0;
+  cursor: pointer;
+  transition:
+    transform 0.25s cubic-bezier(0.28, 0.11, 0.32, 1),
+    background-color 0.25s ease,
+    box-shadow 0.25s ease;
+}
+
+.ios-modern-settings__card:hover {
+  background-color: #f7f7f8;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+.ios-modern-settings__card:active {
+  transform: scale(0.96);
+  transition: transform 0.1s ease;
+}
+
+.ios-modern-settings__icon {
+  width: 34px;
+  height: 34px;
+  margin-right: 12px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 10px;
+  transition: transform 0.25s cubic-bezier(0.28, 0.11, 0.32, 1);
+}
+
+.ios-modern-settings__card:hover .ios-modern-settings__icon {
+  transform: scale(1.05);
+}
+
+
+
+.ios-modern-settings__content {
+  flex: 1;
+}
+
+.ios-modern-settings__title {
+  font-size: 16px;
+  font-weight: 500;
+  color: #000000;
+  margin: 0;
+  letter-spacing: -0.3px;
+}
+
+.ios-modern-settings__description {
+  font-size: 13px;
+  color: #6b7280;
+  margin: 2px 0 0;
+  line-height: 1.3;
+}
+
+/* Fade-in animation for cards */
+.ios-modern-settings__card {
+  opacity: 0;
+  transform: translateY(12px);
+  animation: ios-modern-settings__fadeInUp 0.35s
+    cubic-bezier(0.28, 0.11, 0.32, 1) forwards;
+}
+
+.ios-modern-settings__card:nth-child(1) {
+  animation-delay: 0.05s;
+}
+.ios-modern-settings__card:nth-child(2) {
+  animation-delay: 0.1s;
+}
+.ios-modern-settings__card:nth-child(3) {
+  animation-delay: 0.15s;
+}
+.ios-modern-settings__card:nth-child(4) {
+  animation-delay: 0.2s;
+}
+.ios-modern-settings__card:nth-child(5) {
+  animation-delay: 0.25s;
+}
+.ios-modern-settings__card:nth-child(6) {
+  animation-delay: 0.3s;
+}
+.ios-modern-settings__card:nth-child(7) {
+  animation-delay: 0.35s;
+}
+.ios-modern-settings__card:nth-child(8) {
+  animation-delay: 0.4s;
+}
+
+@keyframes ios-modern-settings__fadeInUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

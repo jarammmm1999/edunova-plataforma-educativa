@@ -1,0 +1,9 @@
+input[type="date"] {
+  padding-right: 2.5rem; /* deja espacio para que no se tape */
+}
+
+.form-date-periodo:focus{
+  outline: none !important;
+  box-shadow: none;
+  border: 2px solid var(--color-primario) !important;
+}

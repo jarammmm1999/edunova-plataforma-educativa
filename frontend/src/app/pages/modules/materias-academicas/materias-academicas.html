@@ -1,0 +1,44 @@
+<h2 class="form-title mt-3"><i class="fa-solid fa-book"></i>&nbsp; Materias académicas</h2>
+<form (ngSubmit)="registrarmateria()" #formMateria="ngForm" class="mt-3">
+    <div class="row align-items-center g-2">
+        <!-- Campo de entrada -->
+        <div class="col-12 col-md-9">
+            <app-inputs label="Materias" type="text" name="materia" [(ngModel)]="materia" [required]="true">
+            </app-inputs>
+        </div>
+        <!-- Botón alineado a la derecha -->
+        <div class="col-12 col-md-3 d-flex justify-content-md-end justify-content-center">
+            <app-button-submit [text]="'Registrar materia'"></app-button-submit>
+        </div>
+
+    </div>
+</form>
+
+<h2 class="form-title mt-2"><i class="fa-solid fa-book"></i>&nbsp; Materias académicas registrada</h2>
+<app-buscador [placeholder]="'Buscar materias academica...'" [(ngModel)]="busquedaMateria"></app-buscador>
+
+<div class="materias-container mb-3" *ngIf="materias.length > 0; else sinMaterias">
+  <div class="materia-card" *ngFor="let materia of getMateriasFiltradas()">
+    <div class="materia-header">{{ materia.nombre_materia }}</div>
+
+    <div class="materia-body">
+      <span class="materia-letra">
+        {{ materia.nombre_materia.charAt(0).toUpperCase() }}
+      </span>
+    </div>
+
+    <div class="materia-footer">
+      <button class="btn-editar" title="Editar" (click)="actualizarMateria(materia)">
+        <i class="fas fa-pencil-alt"></i>
+      </button>
+      <button class="btn-eliminar" title="Eliminar" (click)="eliminarMateria(materia)" >
+        <i class="fas fa-trash-alt"></i>
+      </button>
+    </div>
+  </div>
+</div>
+
+<ng-template #sinMaterias>
+  <app-error-message [mensaje]="' No hay materias registradas para esta sede.'" [imagen]="'error-busqueda.png'">
+  </app-error-message>
+</ng-template>

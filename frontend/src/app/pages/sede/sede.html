@@ -1,0 +1,63 @@
+<app-loader *ngIf="cargandodatos" [mensaje]="'Cargando sedes...'"></app-loader>
+<!-- header instituciones-->
+<div class="header-title-institucion d-flex align-items-center justify-content-center px-3">
+    <div class="flex-shrink-0">
+        <button onclick="window.history.back()" class="btn btn-light text-dark fw-bold">
+           <i class="fa-solid fa-left-long icono"></i>
+        </button>
+    </div>
+    <div class="flex-grow-1 text-center">
+        <h4 class="mb-0">
+            Selecciona tu sede
+        </h4>
+    </div>
+    <div class="flex-shrink-0" style="width: 42px;"></div>
+</div>
+
+
+<!-- Error de conexión -->
+<div *ngIf="error && !cargandodatos">
+  <app-error-message [mensaje]="'Hubo un error de conexión. No se pueden mostrar las sedes.'"
+    [imagen]="'error-conexion.png'">
+  </app-error-message>
+</div>
+<!-- No hay instituciones encontradas -->
+<div *ngIf="!error && !cargandodatos && sedesRegistradas.length === 0">
+  <app-error-message [mensaje]="'No se encontraron sede registradas.'" [imagen]="'error-conexion.png'">
+  </app-error-message>
+</div>
+<!-- Buscador -->
+<app-buscador [placeholder]="'Buscar sedes...'" (buscar)="filtrarSedes($event)">
+</app-buscador>
+
+<!-- No hay instituciones encontradas -->
+<div *ngIf="!error && SedesFiltradas.length === 0">
+  <app-error-message [mensaje]="'No se encontraron sedes que coincidan con tu búsqueda.'" [imagen]="'error-busqueda.png'">
+  </app-error-message>
+</div>
+
+<!-- Contenedor de instituciones -->
+<div id="contenedor-instituciones" class="container py-4">
+  <div class="row g-4" *ngIf="!error && !cargandodatos && SedesFiltradas.length > 0">
+    <div class="col-sm-12 col-md-6 col-lg-4" *ngFor="let sedes of SedesFiltradas">
+      <div class="card tarjeta-institucion animate__animated animate__fadeInUp h-100">
+
+        <!-- Imagen -->
+        <div class="overflow-hidden rounded-top">
+          <img [src]="CargarImagenes(1, 'school.jpg')" class="card-img-top img-fluid institution-img"
+            alt="Logo de {{ sedes.nombre_sede }}" />
+        </div>
+
+        <!-- Contenido -->
+        <div class="card-body d-flex flex-column justify-content-between">
+          
+          <h5 *ngIf="sedes?.colores_sede?.primario" class="card-title fw-bold "  [ngStyle]="{ 'color': sedes.colores_sede.primario }" >{{ sedes.nombre_sede }}</h5>
+          <p class="text-muted small mb-3" >Educación con calidad y compromiso</p>
+           <a [routerLink]="['/login', sedes.id_sede] " [style.backgroundColor]="sedes.colores_sede.primario" class="btn btn-instituciones">Login</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+

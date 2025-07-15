@@ -1,0 +1,41 @@
+.contenedor-info-user{
+    background: var(--color-primario);
+}
+.text-title{
+    color: var(--color-primario);
+    font-size: 2rem;
+    font-weight: 700;
+}
+.text-title.two{
+    color: var(--color-primario);
+    font-size: 18px;
+    font-weight: 700;
+}
+.btn-update-user {
+  background-color: var(--color-primario);
+  color: white;
+  padding: 15px 20px;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.btn-update-user:hover {
+  background-color: var(--color-primario);
+  transform: scale(1.03);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.46);
+  color: #fff;
+}
+
+.btn-update-user:active {
+  transform: scale(0.98);
+  box-shadow: none;
+}
+
+label:hover #iconoEditar {
+    display: flex !important;
+    justify-content: center;
+    align-items: center;
+  }

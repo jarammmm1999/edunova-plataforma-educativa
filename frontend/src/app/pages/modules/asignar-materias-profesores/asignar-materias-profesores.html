@@ -1,0 +1,158 @@
+<div *ngIf="materiasAsignadasProfesores.length > 0">
+  <h2 class="form-title mt-4"><i class="fa-solid fa-users"></i>&nbsp; Materias asignadas a profesores</h2>
+
+  <div class="accordion mb-5" id="accordionProfesores">
+    <div class="accordion-item" *ngFor="let profesor of materiasAsignadasProfesores; let i = index">
+      <h2 class="accordion-header" [id]="'headingProf' + i">
+        <button class="accordion-button" [class.collapsed]="activeProfesor !== i" type="button" (click)="toggleProfesor(i)">
+          👨‍🏫 <strong>{{ profesor.nombres }}</strong> <small class="ms-2 ">({{ profesor.documento_docente }})</small>
+        </button>
+      </h2>
+
+      <div [id]="'collapseProf' + i"
+           class="accordion-collapse collapse"
+           [class.show]="activeProfesor === i"
+           [attr.aria-labelledby]="'headingProf' + i">
+        <div class="accordion-body animate__animated animate__fadeIn">
+          
+          <!-- 🔵 Materias -->
+          <div *ngFor="let materia of profesor.materias; let matIndex = index" class="card shadow-sm mb-4 border-0 bg-white">
+            <div class="card-header d-flex justify-content-between align-items-center bg-card-asignacion text-white rounded-top py-2 px-3">
+              <h6 class="mb-0"><i class="fas fa-book me-2"></i> {{ materia.nombre_materia }}</h6>
+              <button class="btn btn-delete-materia text-white" title="Eliminar materia"
+                (click)="eliminarMateriaAsignadoProfesores(profesor.documento_docente, profesor.nombres, materia.nombre_materia, materia.id_materia)">
+                <i class="fas fa-trash text-danger text-white"></i>
+              </button>
+            </div>
+
+            <div class="card-body bg-light-subtle">
+              <div *ngFor="let grado of materia.grados; let gradIndex = index" class="mb-3">
+                <div class="d-flex justify-content-between align-items-center bg-light border-grado p-2 mb-2">
+                  <strong><i class="fas fa-graduation-cap me-2"></i> Grado: {{ grado.nombre_grado }}</strong>
+                  <button class="btn btn-delete-materia"
+                    (click)="eliminarGradoAsignadoProfesores(profesor.documento_docente, profesor.nombres, grado.id_grado, grado.nombre_grado)"
+                    title="Eliminar grado">
+                    <i class="fas fa-trash-alt"></i>
+                  </button>
+                </div>
+
+                <div class="ps-1">
+                  <ul class="list-group list-group-flush">
+                    <li *ngFor="let grupo of grado.grupos; let grupoIndex = index"
+                        class="list-group-item d-flex justify-content-between align-items-center px-2 py-1">
+                      <span><i class="fas fa-users me-2"></i> Grupo {{ grupo.nombre_grupo }}</span>
+                      <button class="btn btn-delete-materia"
+                        (click)="eliminarGrupoAsignadoProfesores(profesor.documento_docente, profesor.nombres, grupo.id_grupo, grupo.nombre_grupo, grado.nombre_grado)"
+                        title="Eliminar grupo">
+                        <i class="fas fa-trash-alt"></i>
+                      </button>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- 🔵 Fin materia -->
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+<!---------------------------------------------------------------------------------------------------->
+<h2 class="form-title mt-4"><i class="fa-solid fa-users"></i>&nbsp; Profesores registrados</h2>
+<div class="form-row">
+  <div class="form-group">
+    <label class="form-label fw-semibold">👨‍🏫 Selecciona un profesor:</label>
+    <select class="form-select" [(ngModel)]="profesorSeleccionado" name="profesorSeleccionado" required>
+      <option *ngFor="let profe of profesoresregistrados" [ngValue]="profe">{{ profe.nombres }}</option>
+    </select>
+  </div>
+</div>
+
+<h2 class="form-title mt-4"><i class="fas fa-book"></i>&nbsp; Materias disponibles</h2>
+<div class="row mt-3">
+  <div class="col-md-4 mb-3" *ngFor="let materia of materias">
+    <div class="d-flex justify-content-between align-items-center bg-light rounded px-3 py-2 shadow-sm border">
+      <span class="fw-semibold">{{ materia.nombre_materia }}</span>
+      <button class="btn btn-add-materias" (click)="seleccionarMateria(materia)">
+        <i class="fas fa-check"></i>
+      </button>
+    </div>
+  </div>
+</div>
+
+<div *ngIf="materiaSeleccionada">
+  <h4 class="form-title mt-4">
+    <i class="fas fa-school"></i> Selecciona los grados para:
+    <span class="text-grado-seleccionado">{{ materiaSeleccionada.nombre_materia }}</span>
+  </h4>
+
+  <div class="row mt-3">
+    <div class="col-md-4 mb-3" *ngFor="let grado of grados">
+      <div class="d-flex justify-content-between align-items-center border rounded p-2 bg-white shadow-sm">
+        <span class="fw-semibold">{{ grado.nombre_grado }}</span>
+        <button class="btn btn-outline-sede" (click)="seleccionarGrado(grado)">
+          <i class="fas fa-layer-group"></i> Grupos
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div *ngIf="gradoSeleccionado">
+  <h5 class="form-title mt-3">
+    Grupos de <span class="text-grado-seleccionado">{{ gradoSeleccionado.nombre_grado }}</span>
+  </h5>
+
+  <div class="row mt-2">
+    <div class="col-md-4 mb-2" *ngFor="let grupo of gruposModal">
+      <div class="bg-light p-2 rounded border shadow-sm d-flex justify-content-between align-items-center">
+        <span>{{ grupo.nombre_grupo }}</span>
+        <button class="btn btn-asignar-grupo btn-sm p-2" (click)="asignarGrupoAGrilla(grupo)">
+          <i class="fas fa-plus-circle"></i> &nbsp; Asignar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Vista previa de asignaciones -->
+<div class="mt-5" *ngIf="asignaciones.length > 0">
+  <h3 class="form-title">📋 Asignaciones Realizadas</h3>
+
+  <div class="card mb-3" *ngFor="let prof of asignaciones; let i = index">
+    <div class="card-header card-header-title text-white d-flex justify-content-between">
+      <span><strong>{{ prof.profesor.nombres }}</strong></span>
+      <button class="btn btn-sm btn-delete-materia p-2" (click)="eliminarProfesor(i)"><i class="fa-solid fa-trash"></i> &nbsp; </button>
+    </div>
+    <div class="card-body">
+      <div *ngFor="let materia of prof.materias; let j = index" class="mb-3 border p-2 rounded">
+        <div class="d-flex justify-content-between">
+          <strong >📚 {{ materia.nombre_materia }}</strong>
+          <button class="btn btn-sm btn-delete-materia p-2" (click)="eliminarMateria(i, j)"> <i class="fa-solid fa-trash"></i> </button>
+        </div>
+        <ul class="mt-2 list-group">
+          <li class="list-group-item" *ngFor="let grado of materia.grados; let k = index">
+            <h5 class="form-title">🎓 {{ grado.nombre_grado }}</h5>
+            <ul class="mt-1 list-group">
+              <li class="d-flex justify-content-between list-group-item mt-1" *ngFor="let grupo of grado.grupos; let l = index">
+                <span>Grupo: {{ grupo.nombre_grupo }}</span>
+                <button class="btn btn-sm btn-delete-materia p-2" (click)="eliminarGrupo(i, j, k, l)"> <i class="fa-solid fa-trash"></i> </button>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="text-center mt-2 mb-4">
+    <app-button-submit [text]="'Guardar todas las asignaciones'"
+      (click)="guardarAsignacionesEnBackend()"></app-button-submit>
+  </div>
+
+</div>

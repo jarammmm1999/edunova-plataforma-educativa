@@ -1,0 +1,69 @@
+<app-buscador [placeholder]="'Buscar tarjeta...'" (buscar)="filtrarTajetas($event)" ></app-buscador>
+
+<div *ngIf="tarjetasVisibles.length === 0">
+  <app-error-message [mensaje]="'No se encontraron tarjetas que coincidan con tu búsqueda.'" [imagen]="'error-busqueda.png'">
+  </app-error-message>
+</div>
+
+<div class="container-home-page mt-3">
+
+ 
+
+   <!-- Tarjetas para todos los roles que sean profesor -->
+   <div *ngIf="usuario?.id_rol == 3">
+      <div class="card-grid-profesores">
+        <a *ngFor="let tarjeta of tarjetasVisibles; let i = index" [routerLink]="tarjeta.ruta">
+           <div class="card-item-profesores animate__animated animate__zoomIn" [style.animationDelay]="(i * 100) + 'ms'">
+            <div class="card-header-profesores">{{ tarjeta.nombre }}</div>
+            <div class="card-body-profesores">
+              <img [src]="CargarImagenes(8, tarjeta.imagen)" alt="{{ tarjeta.imagen }}">
+            </div>
+             <div class="card-footer">Ir</div>
+           </div>
+        </a>
+      </div>
+   </div>
+
+
+     <!-- Tarjetas para todos los roles que sean estudiantes -->
+   <div *ngIf="usuario?.id_rol == 4">
+      <div class="card-grid-profesores">
+        <a *ngFor="let tarjeta of tarjetasVisibles; let i = index" [routerLink]="tarjeta.ruta">
+           <div class="card-item-profesores animate__animated animate__zoomIn" [style.animationDelay]="(i * 100) + 'ms'">
+            <div class="card-header-profesores">{{ tarjeta.nombre }}</div>
+            <div class="card-body-profesores">
+              <img [src]="CargarImagenes(8, tarjeta.imagen, tarjeta.documento_profesor)" alt="{{ tarjeta.imagen }}">
+            </div>
+            <div class="card-footer text-center">
+              <span *ngIf="tarjeta.docente; else sinDocente">
+                {{ tarjeta.docente }}
+              </span>
+              <ng-template #sinDocente>
+                <em class="text-white">Docente no asignado</em>
+              </ng-template>
+            </div>
+           </div>
+        </a>
+      </div>
+   </div>
+
+
+
+<!-- Tarjetas para otros roles (admin, etc.) -->
+  <div *ngIf="usuario?.id_rol !== 3 && usuario?.id_rol !== 4">
+    <div class="card-grid">
+      <a *ngFor="let tarjeta of tarjetasVisibles; let i = index" [routerLink]="tarjeta.ruta">
+        <div class="card-item animate__animated animate__zoomIn" [style.animationDelay]="(i * 100) + 'ms'">
+          <div class="card-header">{{ tarjeta.nombre }}</div>
+          <div class="card-body">
+            <img [src]="CargarImagenes(1, tarjeta.imagen)" alt="{{ tarjeta.nombre }}">
+          </div>
+          <div class="card-footer">Ir</div>
+        </div>
+      </a>
+    </div>
+  </div>
+
+
+
+</div>

@@ -1,0 +1,11 @@
+.layout-container {
+  display: flex;
+  height: auto;
+}
+
+.layout-content {
+  flex: 1;
+  padding:0%;
+  background-color: #ffffff;
+  overflow-y: auto;
+}
